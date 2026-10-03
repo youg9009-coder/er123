@@ -31,13 +31,15 @@ async function loadPeople() {
 }
 
 
-// 티어 구역 만들기
+// S / A / B 구역 만들기
 function createTierSection(tier, emoji, people) {
   let html =
     '<section class="tier-section">' +
       '<h3 class="tier-title tier-title-' + tier + '">' +
         emoji + ' ' + tier + ' TIER' +
-      '</h3>';
+      '</h3>' +
+
+      '<div class="people-grid">';
 
   if (people.length === 0) {
     html +=
@@ -45,7 +47,9 @@ function createTierSection(tier, emoji, people) {
         '아직 사람이 없습니다.' +
       '</div>';
   } else {
+
     people.forEach(function(person) {
+
       html +=
         '<div class="person">' +
 
@@ -57,11 +61,11 @@ function createTierSection(tier, emoji, people) {
             person.tier +
           '</span>' +
 
-          '<button onclick="toggleEdit(' + person.id + ')">' +
+          '<button class="edit-button" onclick="toggleEdit(' + person.id + ')">' +
             '수정' +
           '</button>' +
 
-          '<span id="edit-' + person.id + '" class="edit-buttons" style="display:none;">' +
+          '<div id="edit-' + person.id + '" class="edit-buttons">' +
 
             '<button onclick="changeTier(' + person.id + ', \'up\')">' +
               '▲ 올리기' +
@@ -75,13 +79,15 @@ function createTierSection(tier, emoji, people) {
               '삭제' +
             '</button>' +
 
-          '</span>' +
+          '</div>' +
 
         '</div>';
     });
   }
 
-  html += '</section>';
+  html +=
+      '</div>' +
+    '</section>';
 
   return html;
 }
@@ -91,8 +97,8 @@ function createTierSection(tier, emoji, people) {
 function toggleEdit(id) {
   const editButtons = document.getElementById("edit-" + id);
 
-  if (editButtons.style.display === "none") {
-    editButtons.style.display = "inline-flex";
+  if (editButtons.style.display === "none" || editButtons.style.display === "") {
+    editButtons.style.display = "flex";
   } else {
     editButtons.style.display = "none";
   }
@@ -130,7 +136,7 @@ async function searchPerson() {
 
   result.innerHTML = data.map(function(person) {
     return (
-      '<div class="person search-person">' +
+      '<div class="search-person">' +
 
         '<span class="person-name">' +
           person.name +
@@ -184,6 +190,7 @@ async function addPerson() {
 
 // 티어 변경
 async function changeTier(id, direction) {
+
   const { data, error } = await supabaseClient
     .from("people")
     .select("tier")
@@ -197,6 +204,7 @@ async function changeTier(id, direction) {
   }
 
   const tiers = ["S", "A", "B"];
+
   const currentIndex = tiers.indexOf(data.tier);
 
   let newIndex;
@@ -207,7 +215,15 @@ async function changeTier(id, direction) {
     newIndex = currentIndex + 1;
   }
 
-  if (newIndex < 0 || newIndex >= tiers.length) {
+  // S에서 더 올릴 수 없음
+  if (newIndex < 0) {
+    alert("이미 최고 티어입니다.");
+    return;
+  }
+
+  // B에서 더 내릴 수 없음
+  if (newIndex >= tiers.length) {
+    alert("이미 최저 티어입니다.");
     return;
   }
 
@@ -232,7 +248,10 @@ async function changeTier(id, direction) {
 
 // 사람 삭제
 async function deletePerson(id) {
-  const confirmed = confirm("정말 이 사람을 삭제하시겠습니까?");
+
+  const confirmed = confirm(
+    "정말 이 사람을 삭제하시겠습니까?"
+  );
 
   if (!confirmed) {
     return;
