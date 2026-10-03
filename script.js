@@ -1,11 +1,4 @@
-const SUPABASE_URL = "...";
-const SUPABASE_KEY = "...";
-
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
+</> JavaScript
 
 // 전체 사람 목록 가져오기
 async function loadPeople() {
