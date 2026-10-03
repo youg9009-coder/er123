@@ -12,30 +12,78 @@ async function loadPeople() {
 
   const peopleList = document.getElementById("peopleList");
 
-  peopleList.innerHTML = "";
+  const tiers = {
+    S: [],
+    A: [],
+    B: []
+  };
 
   data.forEach(function(person) {
-    peopleList.innerHTML +=
-      '<div class="person">' +
-        '<span>' + person.name + '</span>' +
-        '<span class="tier tier-' + person.tier + '">' +
-          person.tier +
-        '</span>' +
-
-        '<button onclick="toggleEdit(' + person.id + ')">수정</button>' +
-
-        '<span id="edit-' + person.id + '" style="display:none;">' +
-
-          '<button onclick="changeTier(' + person.id + ', \'up\')">올리기</button>' +
-
-          '<button onclick="changeTier(' + person.id + ', \'down\')">내리기</button>' +
-
-          '<button onclick="deletePerson(' + person.id + ')">삭제</button>' +
-
-        '</span>' +
-
-      '</div>';
+    if (tiers[person.tier]) {
+      tiers[person.tier].push(person);
+    }
   });
+
+  peopleList.innerHTML =
+    createTierSection("S", "🔴", tiers.S) +
+    createTierSection("A", "🟠", tiers.A) +
+    createTierSection("B", "🔵", tiers.B);
+}
+
+
+// 티어 구역 만들기
+function createTierSection(tier, emoji, people) {
+  let html =
+    '<section class="tier-section">' +
+      '<h3 class="tier-title tier-title-' + tier + '">' +
+        emoji + ' ' + tier + ' TIER' +
+      '</h3>';
+
+  if (people.length === 0) {
+    html +=
+      '<div class="empty-tier">' +
+        '아직 사람이 없습니다.' +
+      '</div>';
+  } else {
+    people.forEach(function(person) {
+      html +=
+        '<div class="person">' +
+
+          '<span class="person-name">' +
+            person.name +
+          '</span>' +
+
+          '<span class="tier tier-' + person.tier + '">' +
+            person.tier +
+          '</span>' +
+
+          '<button onclick="toggleEdit(' + person.id + ')">' +
+            '수정' +
+          '</button>' +
+
+          '<span id="edit-' + person.id + '" class="edit-buttons" style="display:none;">' +
+
+            '<button onclick="changeTier(' + person.id + ', \'up\')">' +
+              '▲ 올리기' +
+            '</button>' +
+
+            '<button onclick="changeTier(' + person.id + ', \'down\')">' +
+              '▼ 내리기' +
+            '</button>' +
+
+            '<button onclick="deletePerson(' + person.id + ')">' +
+              '삭제' +
+            '</button>' +
+
+          '</span>' +
+
+        '</div>';
+    });
+  }
+
+  html += '</section>';
+
+  return html;
 }
 
 
@@ -44,7 +92,7 @@ function toggleEdit(id) {
   const editButtons = document.getElementById("edit-" + id);
 
   if (editButtons.style.display === "none") {
-    editButtons.style.display = "inline";
+    editButtons.style.display = "inline-flex";
   } else {
     editButtons.style.display = "none";
   }
@@ -76,17 +124,22 @@ async function searchPerson() {
 
   if (data.length === 0) {
     result.innerHTML =
-      '<div class="no-result">없음</div>';
+      '<div class="no-result">검색 결과가 없습니다.</div>';
     return;
   }
 
   result.innerHTML = data.map(function(person) {
     return (
-      '<div class="person">' +
-        '<span>' + person.name + '</span>' +
+      '<div class="person search-person">' +
+
+        '<span class="person-name">' +
+          person.name +
+        '</span>' +
+
         '<span class="tier tier-' + person.tier + '">' +
           person.tier +
         '</span>' +
+
       '</div>'
     );
   }).join("");
