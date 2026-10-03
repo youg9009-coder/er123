@@ -1,4 +1,4 @@
-</> JavaScript
+
 
 // 전체 사람 목록 가져오기
 async function loadPeople() {
