@@ -10,16 +10,20 @@
 <body>
   <div class="container">
 
-    <h1> ER123 티어표</h1>
-    <p class="subtitle">사람 이름을 검색해서 티어를 확인하세요.</P>
+    <h1>ER123 티어표</h1>
 
+    <p class="subtitle">
+      사람 이름을 검색해서 티어를 확인하세요.
+    </p>
+
+    <!-- 검색 -->
     <div class="search-box">
       <input
         type="text"
         id="searchInput"
         placeholder="검색"
       >
-      <button onclick="searchperson()">검색</button>
+      <button onclick="searchPerson()">검색</button>
     </div>
 
     <div id="result"></div>
@@ -28,11 +32,29 @@
 
     <div id="peopleList"></div>
 
+    <!-- 사람 추가 -->
+    <h2>사람 추가</h2>
+
+    <div class="search-box">
+      <input
+        type="text"
+        id="nameInput"
+        placeholder="사람 이름 입력"
+      >
+
+      <select id="tierInput">
+        <option value="S">S</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+      </select>
+
+      <button onclick="addPerson()">추가</button>
+    </div>
+
   </div>
 
-<<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
 
-    
 </body>
 </html>
