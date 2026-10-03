@@ -118,4 +118,6 @@ async function addPerson() {
 
 // 페이지가 열리면 전체 목록 표시
 loadPeople();
+
+alert("JavaScript 작동!");
 ```
