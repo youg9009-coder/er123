@@ -155,13 +155,12 @@ h1 {
 
 .person {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
 
-  min-height: 66px;
-
-  margin-bottom: 9px;
-  padding: 11px 14px 11px 20px;
+  min-height: 120px;
+  padding: 15px;
 
   border: 1px solid rgba(148, 163, 184, 0.08);
   border-radius: 14px;
@@ -172,6 +171,14 @@ h1 {
     0 7px 20px rgba(0, 0, 0, 0.13);
 
   transition: 0.2s;
+}
+
+.person:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(96, 165, 250, 0.3);
+
+  background: rgba(36, 50, 72, 0.98);
 }
 
 .person:hover {
