@@ -15,29 +15,39 @@ async function loadPeople() {
   peopleList.innerHTML = "";
 
   data.forEach(function(person) {
-    let buttons = "";
-
-    if (person.tier !== "S") {
-      buttons += '<button onclick="changeTier(' + person.id + ', \'up\')">▲ 올리기</button>';
-    }
-
-    if (person.tier !== "B") {
-      buttons += '<button onclick="changeTier(' + person.id + ', \'down\')">▼ 내리기</button>';
-    }
-
-    buttons += '<button onclick="deletePerson(' + person.id + ')">삭제</button>';
-
     peopleList.innerHTML +=
       '<div class="person">' +
         '<span>' + person.name + '</span>' +
         '<span class="tier tier-' + person.tier + '">' +
           person.tier +
         '</span>' +
-        '<span class="person-buttons">' +
-          buttons +
+
+        '<button onclick="toggleEdit(' + person.id + ')">수정</button>' +
+
+        '<span id="edit-' + person.id + '" style="display:none;">' +
+
+          '<button onclick="changeTier(' + person.id + ', \'up\')">올리기</button>' +
+
+          '<button onclick="changeTier(' + person.id + ', \'down\')">내리기</button>' +
+
+          '<button onclick="deletePerson(' + person.id + ')">삭제</button>' +
+
         '</span>' +
+
       '</div>';
   });
+}
+
+
+// 수정 버튼
+function toggleEdit(id) {
+  const editButtons = document.getElementById("edit-" + id);
+
+  if (editButtons.style.display === "none") {
+    editButtons.style.display = "inline";
+  } else {
+    editButtons.style.display = "none";
+  }
 }
 
 
