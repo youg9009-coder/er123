@@ -24,15 +24,14 @@ async function loadPeople() {
 
   peopleList.innerHTML = "";
 
-  data.forEach(person => {
-    peopleList.innerHTML += `
-      <div class="person">
-        <span>${person.name}</span>
-        <span class="tier tier-${person.tier}">
-          ${person.tier}
-        </span>
-      </div>
-    `;
+  data.forEach(function(person) {
+    peopleList.innerHTML +=
+      '<div class="person">' +
+        '<span>' + person.name + '</span>' +
+        '<span class="tier tier-' + person.tier + '">' +
+          person.tier +
+        '</span>' +
+      '</div>';
   });
 }
 
@@ -52,7 +51,7 @@ async function searchPerson() {
   const { data, error } = await supabaseClient
     .from("people")
     .select("*")
-    .ilike("name", `%${name}%`);
+    .ilike("name", "%" + name + "%");
 
   if (error) {
     console.error(error);
@@ -61,22 +60,21 @@ async function searchPerson() {
   }
 
   if (data.length === 0) {
-    result.innerHTML = `
-      <div class="no-result">
-        없음
-      </div>
-    `;
+    result.innerHTML =
+      '<div class="no-result">없음</div>';
     return;
   }
 
-  result.innerHTML = data.map(person => `
-    <div class="person">
-      <span>${person.name}</span>
-      <span class="tier tier-${person.tier}">
-        ${person.tier}
-      </span>
-    </div>
-  `).join("");
+  result.innerHTML = data.map(function(person) {
+    return (
+      '<div class="person">' +
+        '<span>' + person.name + '</span>' +
+        '<span class="tier tier-' + person.tier + '">' +
+          person.tier +
+        '</span>' +
+      '</div>'
+    );
+  }).join("");
 }
 
 
@@ -118,6 +116,4 @@ async function addPerson() {
 
 // 페이지가 열리면 전체 목록 표시
 loadPeople();
-
-alert("JavaScript 작동!");
 ```
