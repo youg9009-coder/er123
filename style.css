@@ -408,3 +408,30 @@ h1 {
     padding: 0 18px;
   }
 }
+
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.people-grid .person {
+  min-width: 0;
+}
+
+.edit-buttons {
+  display: none;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.empty-tier {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 700px) {
+  .people-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
