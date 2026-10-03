@@ -1,94 +1,403 @@
 * {
-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #111827;
-  color: white;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, #1e293b 0%, #111827 45%, #0b1120 100%);
+  color: #f8fafc;
+  font-family: Arial, "Noto Sans KR", sans-serif;
 }
 
 .container {
-  width: 90%;
-  max-width: 700px;
-  margin: 50px auto;
-  text-align: center;
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 55px 25px 80px;
 }
 
 h1 {
-  font-size: 40px;
-  margin-bottom: 10px;
+  margin: 0;
+  text-align: center;
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -2px;
 }
 
 .subtitle {
-  color: #9ca3af;
-  margin-bottom: 30px;
+  margin: 14px 0 35px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 16px;
 }
+
+/* 검색 */
 
 .search-box {
   display: flex;
   gap: 10px;
-  margin-bottom: 30px;
+  width: 100%;
+  margin-bottom: 35px;
 }
 
 .search-box input {
   flex: 1;
-  padding: 15px;
-  border: none;
-  border-radius: 10px;
+  min-width: 0;
+  height: 52px;
+  padding: 0 18px;
+
+  border: 1px solid #334155;
+  border-radius: 12px;
+
+  outline: none;
+  background: #f8fafc;
+  color: #111827;
+
   font-size: 16px;
 }
 
+.search-box input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
 .search-box button {
-  padding: 15px 25px;
-  border: none;
-  border-radius: 10px;
+  height: 52px;
+  padding: 0 25px;
+
+  border: 0;
+  border-radius: 12px;
+
   background: #2563eb;
   color: white;
-  font-weight: bold;
+
+  font-size: 16px;
+  font-weight: 700;
+
   cursor: pointer;
 }
 
 .search-box button:hover {
-  background: #1d4ed8;
+  background: #3b82f6;
 }
 
-#result {
-  margin-bottom: 30px;
+/* 기존 전체 티어 제목 숨기기 */
+
+.container > h2:first-of-type {
+  display: none;
 }
+
+
+/* 티어 구역 */
+
+.tier-section {
+  margin-bottom: 38px;
+}
+
+.tier-title {
+  margin: 0 0 14px;
+  padding: 13px 18px;
+
+  border-radius: 13px;
+
+  font-size: 22px;
+  font-weight: 800;
+
+  text-align: center;
+}
+
+
+/* S */
+
+.tier-title-S {
+  background: linear-gradient(
+    135deg,
+    #991b1b,
+    #ef4444
+  );
+
+  box-shadow:
+    0 8px 25px rgba(239, 68, 68, 0.18);
+}
+
+
+/* A */
+
+.tier-title-A {
+  background: linear-gradient(
+    135deg,
+    #c2410c,
+    #f97316
+  );
+
+  box-shadow:
+    0 8px 25px rgba(249, 115, 22, 0.16);
+}
+
+
+/* B */
+
+.tier-title-B {
+  background: linear-gradient(
+    135deg,
+    #1d4ed8,
+    #3b82f6
+  );
+
+  box-shadow:
+    0 8px 25px rgba(59, 130, 246, 0.16);
+}
+
+
+/* 사람 카드 */
 
 .person {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: #1f2937;
-  padding: 18px;
-  margin: 10px 0;
-  border-radius: 12px;
+  gap: 10px;
+
+  min-height: 66px;
+
+  margin-bottom: 9px;
+  padding: 11px 14px 11px 20px;
+
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 14px;
+
+  background: rgba(30, 41, 59, 0.92);
+
+  box-shadow:
+    0 7px 20px rgba(0, 0, 0, 0.13);
+
+  transition: 0.2s;
 }
 
+.person:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(96, 165, 250, 0.3);
+
+  background: rgba(36, 50, 72, 0.98);
+}
+
+
+/* 사람 이름 */
+
+.person-name {
+  flex: 1;
+  min-width: 0;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* 티어 표시 */
+
 .tier {
-  padding: 8px 15px;
-  border-radius: 8px;
-  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 46px;
+  height: 40px;
+
+  border-radius: 9px;
+
+  color: white;
+  font-size: 18px;
+  font-weight: 900;
+
+  flex-shrink: 0;
 }
 
 .tier-S {
-  background: #dc2626;
+  background: #ef4444;
 }
 
 .tier-A {
-  background: #ea580c;
+  background: #f97316;
 }
 
 .tier-B {
-  background: #ca8a04;
+  background: #3b82f6;
 }
+
+
+/* 버튼 */
+
+.person button {
+  min-height: 34px;
+  padding: 0 11px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: #334155;
+  color: white;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.15s;
+}
+
+.person button:hover {
+  background: #475569;
+  transform: translateY(-1px);
+}
+
+
+/* 수정 버튼 */
+
+.person > button {
+  background: #2563eb;
+}
+
+.person > button:hover {
+  background: #3b82f6;
+}
+
+
+/* 수정 버튼 그룹 */
+
+.edit-buttons {
+  display: inline-flex;
+  gap: 5px;
+}
+
+
+/* 올리기 */
+
+.edit-buttons button[onclick*="up"] {
+  background: #2563eb;
+}
+
+.edit-buttons button[onclick*="up"]:hover {
+  background: #3b82f6;
+}
+
+
+/* 내리기 */
+
+.edit-buttons button[onclick*="down"] {
+  background: #475569;
+}
+
+.edit-buttons button[onclick*="down"]:hover {
+  background: #64748b;
+}
+
+
+/* 삭제 */
+
+.edit-buttons button[onclick*="deletePerson"] {
+  background: #991b1b;
+}
+
+.edit-buttons button[onclick*="deletePerson"]:hover {
+  background: #dc2626;
+}
+
+
+/* 사람이 없을 때 */
+
+.empty-tier {
+  padding: 22px;
+
+  border: 1px dashed #334155;
+  border-radius: 13px;
+
+  background: rgba(15, 23, 42, 0.5);
+
+  color: #64748b;
+
+  text-align: center;
+}
+
+
+/* 검색 결과 */
 
 .no-result {
-  color: #f87171;
-  margin: 20px;
+  padding: 25px;
+
+  border-radius: 14px;
+
+  background: rgba(30, 41, 59, 0.8);
+
+  color: #94a3b8;
+
+  text-align: center;
 }
 
-  
+
+/* 사람 추가 */
+
+#tierInput {
+  height: 52px;
+
+  padding: 0 12px;
+
+  border: 1px solid #334155;
+  border-radius: 12px;
+
+  background: #f8fafc;
+  color: #111827;
+
+  font-size: 16px;
+}
+
+#nameInput {
+  height: 52px;
+}
+
+
+/* 모바일 */
+
+@media (max-width: 650px) {
+
+  .container {
+    padding: 35px 15px 60px;
+  }
+
+  h1 {
+    font-size: 36px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .person {
+    flex-wrap: wrap;
+  }
+
+  .person-name {
+    width: calc(100% - 60px);
+  }
+
+  .edit-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .tier-title {
+    font-size: 20px;
+  }
+
+  .search-box {
+    gap: 7px;
+  }
+
+  .search-box button {
+    padding: 0 18px;
+  }
+}
