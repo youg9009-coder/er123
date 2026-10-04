@@ -1218,7 +1218,7 @@ function renderPlayerRecord(
     document.createElement("div");
 
   tier.textContent =
-    person.tier + " TIER";
+    person.tier;
 
   Object.assign(tier.style, {
     textAlign: "center",
