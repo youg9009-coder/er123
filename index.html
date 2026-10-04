@@ -8,63 +8,192 @@
 </head>
 
 <body>
-  <div class="container">
 
-    <h1>ER123 티어표</h1>
+  <!-- 왼쪽 사이드바 -->
+  <aside class="sidebar">
 
-    <p class="subtitle">
-      사람 이름을 검색해서 티어를 확인하세요.
-    </p>
-
-    <!-- 검색 -->
-    <div class="search-box">
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="검색"
-      >
-      <button onclick="searchPerson()">검색</button>
+    <div class="sidebar-logo">
+      ER123
     </div>
 
-    <div id="result"></div>
+    <nav class="sidebar-menu">
 
-    <h2>전체 티어</h2>
+      <button class="sidebar-item active" onclick="showPage('tier')">
+        티어표
+      </button>
 
-    <div id="peopleList"></div>
+      <button class="sidebar-item" onclick="showPage('profile')">
+        프로필
+      </button>
 
-    <!-- 사람 추가 -->
-    <h2>사람 추가</h2>
+      <button class="sidebar-item" onclick="showPage('team')">
+        팀 만들기
+      </button>
 
-    <div class="search-box">
-      <input
-        type="text"
-        id="nameInput"
-        placeholder="사람 이름 입력"
-      >
+      <button class="sidebar-item" onclick="showPage('teams')">
+        팀 목록
+      </button>
 
-      <select id="tierInput">
-        <option value="S">S</option>
-        <option value="A">A</option>
-        <option value="B">B</option>
-      </select>
+    </nav>
 
-      <button onclick="addPerson()">추가</button>
+  </aside>
+
+
+  <!-- 오른쪽 메인 영역 -->
+  <main class="main-content">
+
+    <!-- 티어표 페이지 -->
+    <div id="tierPage" class="page active-page">
+
+      <div class="container">
+
+        <h1>ER123 티어표</h1>
+
+        <p class="subtitle">
+          사람 이름을 검색해서 티어를 확인하세요.
+        </p>
+
+        <!-- 검색 -->
+        <div class="search-box">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="검색"
+          >
+
+          <button onclick="searchPerson()">
+            검색
+          </button>
+        </div>
+
+        <div id="result"></div>
+
+        <h2>전체 티어</h2>
+
+        <div id="peopleList"></div>
+
+        <!-- 사람 추가 -->
+        <h2>사람 추가</h2>
+
+        <div class="search-box">
+
+          <input
+            type="text"
+            id="nameInput"
+            placeholder="사람 이름 입력"
+          >
+
+          <select id="tierInput">
+            <option value="S">S</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+          </select>
+
+          <button onclick="addPerson()">
+            추가
+          </button>
+
+        </div>
+
+      </div>
+
     </div>
 
-  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 프로필 페이지 -->
+    <div id="profilePage" class="page">
 
-<script>
-  const SUPABASE_URL = "https://jayxdveislretdubyjjx.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_KHKp-V6XfNPc-Vvv43ALmA_0KsbGquF";
+      <div class="placeholder-page">
+        <h1>프로필</h1>
+        <p>프로필 기능을 준비하고 있습니다.</p>
+      </div>
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-</script>
+    </div>
 
-<script src="script.js?v=3"></script>
+
+    <!-- 팀 만들기 페이지 -->
+    <div id="teamPage" class="page">
+
+      <div class="placeholder-page">
+        <h1>팀 만들기</h1>
+        <p>나중에 S / A / B 랜덤 팀 만들기를 추가할 예정입니다.</p>
+      </div>
+
+    </div>
+
+
+    <!-- 팀 목록 페이지 -->
+    <div id="teamsPage" class="page">
+
+      <div class="placeholder-page">
+        <h1>팀 목록</h1>
+        <p>저장된 팀을 보여주는 공간입니다.</p>
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://jayxdveislretdubyjjx.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_KHKp-V6XfNPc-Vvv43ALmA_0KsbGquF";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+  </script>
+
+
+  <!-- 기존 JavaScript -->
+  <script src="script.js?v=3"></script>
+
+
+  <!-- 사이드바 페이지 전환 -->
+  <script>
+
+    function showPage(page) {
+
+      // 모든 페이지 숨기기
+      document.querySelectorAll(".page").forEach(function(element) {
+        element.classList.remove("active-page");
+      });
+
+
+      // 모든 메뉴 선택 해제
+      document.querySelectorAll(".sidebar-item").forEach(function(element) {
+        element.classList.remove("active");
+      });
+
+
+      // 선택한 페이지 표시
+      if (page === "tier") {
+        document.getElementById("tierPage").classList.add("active-page");
+      }
+
+      if (page === "profile") {
+        document.getElementById("profilePage").classList.add("active-page");
+      }
+
+      if (page === "team") {
+        document.getElementById("teamPage").classList.add("active-page");
+      }
+
+      if (page === "teams") {
+        document.getElementById("teamsPage").classList.add("active-page");
+      }
+
+
+      // 클릭한 메뉴 활성화
+      event.currentTarget.classList.add("active");
+
+    }
+
+  </script>
+
 </body>
 </html>
