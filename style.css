@@ -1029,3 +1029,116 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
+/* ========================================
+   내전 기록
+======================================== */
+
+.history-page {
+  min-height: 100vh;
+  padding: 60px 40px 100px;
+}
+
+.history-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.history-container h1 {
+  text-align: center;
+  font-size: 42px;
+  margin: 0 0 10px;
+}
+
+.history-subtitle {
+  text-align: center;
+  color: #94a3b8;
+  margin-bottom: 45px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.history-match {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 25px;
+}
+
+.history-match-title {
+  margin: 0 0 20px;
+  font-size: 24px;
+  color: white;
+}
+
+.history-team {
+  background: #273449;
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 12px;
+}
+
+.history-team-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.history-team-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: white;
+}
+
+.history-rank {
+  font-size: 18px;
+  font-weight: 900;
+  color: #60a5fa;
+}
+
+.history-players {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-player {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #334155;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.history-loading,
+.history-empty,
+.history-error {
+  text-align: center;
+  color: #94a3b8;
+  padding: 40px;
+}
+
+@media (max-width: 600px) {
+  .history-page {
+    padding: 40px 20px 80px;
+  }
+
+  .history-container h1 {
+    font-size: 34px;
+  }
+
+  .history-match {
+    padding: 18px;
+  }
+
+  .history-team {
+    padding: 15px;
+  }
+}
