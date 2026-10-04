@@ -117,38 +117,6 @@ function createPersonCard(person) {
     card.appendChild(description);
   }
 
-
-  // 티어
-  const tier = document.createElement("span");
-
-  tier.className = "tier tier-" + person.tier;
-  tier.textContent = person.tier;
-
-  tier.style.marginTop = "8px";
-
-  card.appendChild(tier);
-
-
-  // 수정 버튼
-  const editButton = document.createElement("button");
-
-  editButton.textContent = "수정";
-
-  editButton.style.marginTop = "8px";
-  editButton.style.background = "#2563eb";
-  editButton.style.color = "white";
-  editButton.style.border = "0";
-  editButton.style.borderRadius = "8px";
-  editButton.style.padding = "7px 13px";
-  editButton.style.cursor = "pointer";
-
-  editButton.onclick = function() {
-    openEditModal(person);
-  };
-
-  card.appendChild(editButton);
-
-
   return card;
 }
 
