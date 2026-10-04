@@ -797,9 +797,6 @@ checkbox.className = "participant-checkbox";
 checkbox.value = person.id;
 
 checkbox.addEventListener("change", updateParticipantCount);
-
-const name =
-  document.createElement("span");
     
     const name =
       document.createElement("span");
