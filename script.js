@@ -26,7 +26,7 @@ async function loadPeople() {
 
   peopleList.innerHTML = "";
 
-  ["팀장", "팀원", "뉴비"].forEach(function(tier) {
+  ["팀장", "팀원", "새싹싹"].forEach(function(tier) {
     const tierSection = document.createElement("div");
     tierSection.className = "tier-section";
 
