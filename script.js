@@ -1,8 +1,16 @@
+```javascript
 // ========================================
 // ER123 - 메인 스크립트
 // ========================================
 
 let currentTeams = [];
+
+
+// ========================================
+// 과거 내전 직접 입력용 상태
+// ========================================
+
+let manualTeams = [];
 
 
 // ========================================
@@ -695,10 +703,6 @@ async function deletePerson(id, modal) {
 // 프로필 목록
 // ========================================
 
-// ========================================
-// 프로필 목록
-// ========================================
-
 async function loadProfiles() {
   const profileList =
     document.getElementById("profileList");
@@ -738,10 +742,6 @@ async function loadProfiles() {
       document.createElement("div");
 
     card.className = "profile-card";
-
-    // ========================================
-    // 카드 클릭 → 개인 전적
-    // ========================================
 
     card.style.cursor = "pointer";
 
@@ -871,10 +871,7 @@ async function loadProfiles() {
       "profile-edit-button";
 
     editButton.onclick = function(event) {
-
-      // 카드 클릭 이벤트 방지
       event.stopPropagation();
-
       openEditModal(person);
     };
 
@@ -891,10 +888,6 @@ async function loadProfiles() {
 
 async function openPlayerRecord(person) {
 
-  // ========================================
-  // 기존 모달 제거
-  // ========================================
-
   const oldModal =
     document.getElementById(
       "playerRecordModal"
@@ -903,11 +896,6 @@ async function openPlayerRecord(person) {
   if (oldModal) {
     oldModal.remove();
   }
-
-
-  // ========================================
-  // 로딩 모달
-  // ========================================
 
   const modal =
     document.createElement("div");
@@ -930,7 +918,6 @@ async function openPlayerRecord(person) {
     boxSizing: "border-box"
   });
 
-
   const box =
     document.createElement("div");
 
@@ -944,7 +931,6 @@ async function openPlayerRecord(person) {
     color: "white",
     boxSizing: "border-box"
   });
-
 
   const loading =
     document.createElement("p");
@@ -962,10 +948,6 @@ async function openPlayerRecord(person) {
   document.body.appendChild(modal);
 
 
-  // ========================================
-  // 개인이 참가한 팀 기록 가져오기
-  // ========================================
-
   const {
     data: playerRows,
     error: playerError
@@ -978,7 +960,6 @@ async function openPlayerRecord(person) {
         person.id
       );
 
-
   if (playerError) {
     console.error(playerError);
 
@@ -988,18 +969,12 @@ async function openPlayerRecord(person) {
     return;
   }
 
-
   const teamIds =
     (playerRows || []).map(
       function(row) {
         return row.team_id;
       }
     );
-
-
-  // ========================================
-  // 참가 기록이 없는 경우
-  // ========================================
 
   if (teamIds.length === 0) {
     renderPlayerRecord(
@@ -1010,11 +985,6 @@ async function openPlayerRecord(person) {
 
     return;
   }
-
-
-  // ========================================
-  // 팀 기록 가져오기
-  // ========================================
 
   const {
     data: teams,
@@ -1030,7 +1000,6 @@ async function openPlayerRecord(person) {
         teamIds
       );
 
-
   if (teamError) {
     console.error(teamError);
 
@@ -1039,7 +1008,6 @@ async function openPlayerRecord(person) {
 
     return;
   }
-
 
   if (!teams || teams.length === 0) {
     renderPlayerRecord(
@@ -1051,18 +1019,12 @@ async function openPlayerRecord(person) {
     return;
   }
 
-
-  // ========================================
-  // 내전 번호 가져오기
-  // ========================================
-
   const matchIds =
     teams.map(
       function(team) {
         return team.match_id;
       }
     );
-
 
   const {
     data: matches,
@@ -1078,7 +1040,6 @@ async function openPlayerRecord(person) {
         matchIds
       );
 
-
   if (matchError) {
     console.error(matchError);
 
@@ -1087,11 +1048,6 @@ async function openPlayerRecord(person) {
 
     return;
   }
-
-
-  // ========================================
-  // 개인 전적 데이터 조합
-  // ========================================
 
   const records =
     teams.map(function(team) {
@@ -1121,15 +1077,12 @@ async function openPlayerRecord(person) {
       };
     });
 
-
-  // 최신 내전부터
   records.sort(
     function(a, b) {
       return Number(b.matchNumber) -
         Number(a.matchNumber);
     }
   );
-
 
   renderPlayerRecord(
     box,
@@ -1150,11 +1103,6 @@ function renderPlayerRecord(
 ) {
 
   box.innerHTML = "";
-
-
-  // ========================================
-  // 프로필
-  // ========================================
 
   const image =
     document.createElement("img");
@@ -1177,7 +1125,6 @@ function renderPlayerRecord(
 
   box.appendChild(image);
 
-
   const name =
     document.createElement("h2");
 
@@ -1192,9 +1139,7 @@ function renderPlayerRecord(
 
   box.appendChild(name);
 
-
   if (person.nickname) {
-
     const nickname =
       document.createElement("div");
 
@@ -1213,7 +1158,6 @@ function renderPlayerRecord(
     box.appendChild(nickname);
   }
 
-
   const tier =
     document.createElement("div");
 
@@ -1227,11 +1171,6 @@ function renderPlayerRecord(
   });
 
   box.appendChild(tier);
-
-
-  // ========================================
-  // 통계 계산
-  // ========================================
 
   const total =
     records.length;
@@ -1257,11 +1196,6 @@ function renderPlayerRecord(
       }
     ).length;
 
-
-  // ========================================
-  // 통계 카드
-  // ========================================
-
   const stats =
     document.createElement("div");
 
@@ -1273,14 +1207,12 @@ function renderPlayerRecord(
     marginBottom: "25px"
   });
 
-
   const statData = [
     ["총 경기", total],
     ["🥇 1위", first],
     ["🥈 2위", second],
     ["🥉 3위", third]
   ];
-
 
   statData.forEach(
     function(item) {
@@ -1294,7 +1226,6 @@ function renderPlayerRecord(
         padding: "15px 8px",
         textAlign: "center"
       });
-
 
       const label =
         document.createElement("div");
@@ -1311,7 +1242,6 @@ function renderPlayerRecord(
       label.style.marginBottom =
         "7px";
 
-
       const value =
         document.createElement("div");
 
@@ -1324,7 +1254,6 @@ function renderPlayerRecord(
       value.style.fontWeight =
         "900";
 
-
       stat.appendChild(label);
       stat.appendChild(value);
 
@@ -1332,13 +1261,7 @@ function renderPlayerRecord(
     }
   );
 
-
   box.appendChild(stats);
-
-
-  // ========================================
-  // 순위 비율
-  // ========================================
 
   if (total > 0) {
 
@@ -1365,11 +1288,6 @@ function renderPlayerRecord(
     box.appendChild(percentage);
   }
 
-
-  // ========================================
-  // 경기 기록 제목
-  // ========================================
-
   const historyTitle =
     document.createElement("h3");
 
@@ -1380,11 +1298,6 @@ function renderPlayerRecord(
     "0 0 12px";
 
   box.appendChild(historyTitle);
-
-
-  // ========================================
-  // 경기 기록
-  // ========================================
 
   if (records.length === 0) {
 
@@ -1420,7 +1333,6 @@ function renderPlayerRecord(
           alignItems: "center"
         });
 
-
         const matchInfo =
           document.createElement("div");
 
@@ -1432,7 +1344,6 @@ function renderPlayerRecord(
 
         matchInfo.style.fontWeight =
           "700";
-
 
         const rank =
           document.createElement("strong");
@@ -1448,7 +1359,6 @@ function renderPlayerRecord(
             record.rank + "위";
         }
 
-
         row.appendChild(matchInfo);
         row.appendChild(rank);
 
@@ -1456,11 +1366,6 @@ function renderPlayerRecord(
       }
     );
   }
-
-
-  // ========================================
-  // 닫기 버튼
-  // ========================================
 
   const closeButton =
     document.createElement("button");
@@ -1481,7 +1386,6 @@ function renderPlayerRecord(
     cursor: "pointer"
   });
 
-
   closeButton.onclick =
     function() {
 
@@ -1495,9 +1399,9 @@ function renderPlayerRecord(
       }
     };
 
-
   box.appendChild(closeButton);
 }
+
 
 // ========================================
 // 참가자 목록
@@ -1627,8 +1531,6 @@ async function createRandomTeam() {
       ".participant-checkbox:checked"
     );
 
-
-  // 참가자 없음
   if (checked.length === 0) {
     teamResult.innerHTML =
       "<p class='team-error'>" +
@@ -1638,8 +1540,6 @@ async function createRandomTeam() {
     return;
   }
 
-
-  // 3명 미만
   if (checked.length < 3) {
     teamResult.innerHTML =
       "<p class='team-error'>" +
@@ -1649,8 +1549,6 @@ async function createRandomTeam() {
     return;
   }
 
-
-  // 3명 단위 확인
   if (checked.length % 3 !== 0) {
     teamResult.innerHTML =
       "<p class='team-error'>" +
@@ -1665,8 +1563,6 @@ async function createRandomTeam() {
     "팀을 만드는 중..." +
     "</p>";
 
-
-  // 선택된 사람 ID
   const selectedIds =
     Array.from(checked).map(
       function(checkbox) {
@@ -1676,8 +1572,6 @@ async function createRandomTeam() {
       }
     );
 
-
-  // 사람 정보 가져오기
   const { data, error } =
     await supabaseClient
       .from("people")
@@ -1704,11 +1598,6 @@ async function createRandomTeam() {
     return;
   }
 
-
-  // ========================================
-  // 완전 랜덤 섞기
-  // ========================================
-
   const shuffled =
     [...data];
 
@@ -1732,11 +1621,6 @@ async function createRandomTeam() {
     ];
   }
 
-
-  // ========================================
-  // 3명씩 팀 만들기
-  // ========================================
-
   const teams = [];
 
   for (
@@ -1751,11 +1635,6 @@ async function createRandomTeam() {
 
   currentTeams = teams;
 
-
-  // ========================================
-  // 결과 출력
-  // ========================================
-
   teamResult.innerHTML = "";
 
   const title =
@@ -1769,11 +1648,6 @@ async function createRandomTeam() {
 
   teamResult.appendChild(title);
 
-
-  // ========================================
-  // 팀 표시
-  // ========================================
-
   teams.forEach(function(
     team,
     teamIndex
@@ -1783,7 +1657,6 @@ async function createRandomTeam() {
 
     teamBox.className =
       "team-box";
-
 
     const teamTitle =
       document.createElement("h3");
@@ -1803,13 +1676,11 @@ async function createRandomTeam() {
 
     teamBox.appendChild(teamTitle);
 
-
     const teamCards =
       document.createElement("div");
 
     teamCards.className =
       "team-cards";
-
 
     team.forEach(function(person) {
       const card =
@@ -1817,7 +1688,6 @@ async function createRandomTeam() {
 
       card.className =
         "team-card";
-
 
       const image =
         document.createElement("img");
@@ -1837,7 +1707,6 @@ async function createRandomTeam() {
 
       card.appendChild(image);
 
-
       const name =
         document.createElement("h3");
 
@@ -1848,7 +1717,6 @@ async function createRandomTeam() {
         "team-name";
 
       card.appendChild(name);
-
 
       if (person.nickname) {
         const nickname =
@@ -1866,20 +1734,13 @@ async function createRandomTeam() {
       teamCards.appendChild(card);
     });
 
-
     teamBox.appendChild(teamCards);
-
-
-    // ========================================
-    // 순위 선택
-    // ========================================
 
     const rankBox =
       document.createElement("div");
 
     rankBox.className =
       "team-rank-box";
-
 
     const rankLabel =
       document.createElement("span");
@@ -1889,7 +1750,6 @@ async function createRandomTeam() {
 
     rankLabel.className =
       "team-rank-label";
-
 
     const rankSelect =
       document.createElement("select");
@@ -1903,8 +1763,6 @@ async function createRandomTeam() {
     rankSelect.dataset.previousValue =
       String(teamIndex + 1);
 
-
-    // 순위 옵션
     for (
       let rank = 1;
       rank <= teams.length;
@@ -1930,8 +1788,6 @@ async function createRandomTeam() {
       rankSelect.appendChild(option);
     }
 
-
-    // 중복 순위 방지
     rankSelect.addEventListener(
       "change",
       function() {
@@ -1975,7 +1831,6 @@ async function createRandomTeam() {
       }
     );
 
-
     rankBox.appendChild(rankLabel);
     rankBox.appendChild(rankSelect);
 
@@ -1983,11 +1838,6 @@ async function createRandomTeam() {
 
     teamResult.appendChild(teamBox);
   });
-
-
-  // ========================================
-  // 내전 기록 저장 버튼
-  // ========================================
 
   const saveButton =
     document.createElement("button");
@@ -2008,7 +1858,7 @@ async function createRandomTeam() {
 
 
 // ========================================
-// 내전 기록 저장
+// 기존 내전 기록 저장
 // ========================================
 
 async function saveMatchResult() {
@@ -2022,7 +1872,6 @@ async function saveMatchResult() {
 
     return;
   }
-
 
   const rankSelects =
     document.querySelectorAll(
@@ -2040,7 +1889,6 @@ async function saveMatchResult() {
     return;
   }
 
-
   const ranks =
     Array.from(rankSelects).map(
       function(select) {
@@ -2048,8 +1896,6 @@ async function saveMatchResult() {
       }
     );
 
-
-  // 중복 확인
   const uniqueRanks =
     new Set(ranks);
 
@@ -2064,8 +1910,6 @@ async function saveMatchResult() {
     return;
   }
 
-
-  // 순위 확인
   for (
     let i = 0;
     i < ranks.length;
@@ -2084,7 +1928,6 @@ async function saveMatchResult() {
     }
   }
 
-
   const teamResult =
     document.getElementById(
       "teamResult"
@@ -2096,11 +1939,6 @@ async function saveMatchResult() {
       "내전 기록을 저장하는 중..." +
       "</p>";
   }
-
-
-  // ========================================
-  // 다음 내전 번호
-  // ========================================
 
   const {
     data: existingMatches,
@@ -2129,7 +1967,6 @@ async function saveMatchResult() {
     return;
   }
 
-
   let nextMatchNumber = 1;
 
   if (
@@ -2142,11 +1979,6 @@ async function saveMatchResult() {
           .match_number
       ) + 1;
   }
-
-
-  // ========================================
-  // matches 저장
-  // ========================================
 
   const {
     data: matchData,
@@ -2173,14 +2005,8 @@ async function saveMatchResult() {
     return;
   }
 
-
   const matchId =
     matchData.id;
-
-
-  // ========================================
-  // 팀 저장
-  // ========================================
 
   for (
     let i = 0;
@@ -2189,7 +2015,6 @@ async function saveMatchResult() {
   ) {
     const team =
       currentTeams[i];
-
 
     const {
       data: teamData,
@@ -2212,12 +2037,10 @@ async function saveMatchResult() {
         .select()
         .single();
 
-
     if (teamError) {
       console.error(
         teamError
       );
-
 
       await supabaseClient
         .from("matches")
@@ -2227,7 +2050,6 @@ async function saveMatchResult() {
           matchId
         );
 
-
       alert(
         "팀 기록 저장에 실패했습니다."
       );
@@ -2235,14 +2057,8 @@ async function saveMatchResult() {
       return;
     }
 
-
     const teamId =
       teamData.id;
-
-
-    // ========================================
-    // 팀원 저장
-    // ========================================
 
     const playerRows =
       team.map(function(person) {
@@ -2254,6 +2070,1350 @@ async function saveMatchResult() {
             person.id
         };
       });
+
+    const {
+      error: playerError
+    } =
+      await supabaseClient
+        .from("match_players")
+        .insert(
+          playerRows
+        );
+
+    if (playerError) {
+      console.error(
+        playerError
+      );
+
+      await supabaseClient
+        .from("matches")
+        .delete()
+        .eq(
+          "id",
+          matchId
+        );
+
+      alert(
+        "팀원 기록 저장에 실패했습니다."
+      );
+
+      return;
+    }
+  }
+
+  alert(
+    nextMatchNumber +
+    "번째 내전 기록이 저장되었습니다."
+  );
+
+  if (teamResult) {
+    teamResult.innerHTML =
+      "<p class='team-success'>" +
+      nextMatchNumber +
+      "번째 내전 기록이 저장되었습니다." +
+      "</p>";
+  }
+
+  currentTeams = [];
+}
+
+
+// ============================================================
+// 과거 내전 직접 입력
+// ============================================================
+
+// ========================================
+// 직접 입력창 열기
+// ========================================
+
+async function openManualMatchInput() {
+
+  const oldModal =
+    document.getElementById(
+      "manualMatchModal"
+    );
+
+  if (oldModal) {
+    oldModal.remove();
+  }
+
+  manualTeams = [
+    {
+      members: [null, null, null],
+      rank: 1
+    },
+    {
+      members: [null, null, null],
+      rank: 2
+    },
+    {
+      members: [null, null, null],
+      rank: 3
+    }
+  ];
+
+  const {
+    data: people,
+    error
+  } =
+    await supabaseClient
+      .from("people")
+      .select("*")
+      .order("id", {
+        ascending: true
+      });
+
+  if (error) {
+    console.error(error);
+
+    alert(
+      "사람 목록을 불러오지 못했습니다."
+    );
+
+    return;
+  }
+
+  if (!people || people.length === 0) {
+    alert(
+      "먼저 프로필을 등록해주세요."
+    );
+
+    return;
+  }
+
+  const modal =
+    document.createElement("div");
+
+  modal.id =
+    "manualMatchModal";
+
+  Object.assign(modal.style, {
+    position: "fixed",
+    left: "0",
+    top: "0",
+    width: "100%",
+    height: "100%",
+    background: "rgba(0,0,0,0.78)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: "9999",
+    padding: "20px",
+    boxSizing: "border-box"
+  });
+
+
+  const box =
+    document.createElement("div");
+
+  Object.assign(box.style, {
+    width: "min(850px, 100%)",
+    maxHeight: "92vh",
+    overflowY: "auto",
+    background: "#0f172a",
+    borderRadius: "20px",
+    padding: "25px",
+    color: "white",
+    boxSizing: "border-box",
+    boxShadow: "0 25px 60px rgba(0,0,0,0.5)"
+  });
+
+
+  // ========================================
+  // 제목
+  // ========================================
+
+  const title =
+    document.createElement("h2");
+
+  title.textContent =
+    "과거 내전 직접 입력";
+
+  Object.assign(title.style, {
+    textAlign: "center",
+    margin: "0 0 8px",
+    fontSize: "25px"
+  });
+
+  box.appendChild(title);
+
+
+  const subtitle =
+    document.createElement("p");
+
+  subtitle.textContent =
+    "기존에 진행했던 내전 기록을 직접 입력할 수 있습니다.";
+
+  Object.assign(subtitle.style, {
+    textAlign: "center",
+    color: "#94a3b8",
+    margin: "0 0 20px"
+  });
+
+  box.appendChild(subtitle);
+
+
+  // ========================================
+  // 내전 번호
+  // ========================================
+
+  const numberBox =
+    document.createElement("div");
+
+  Object.assign(numberBox.style, {
+    background: "#1e293b",
+    borderRadius: "12px",
+    padding: "15px",
+    marginBottom: "20px"
+  });
+
+  const numberLabel =
+    document.createElement("label");
+
+  numberLabel.textContent =
+    "내전 번호";
+
+  numberLabel.style.display =
+    "block";
+
+  numberLabel.style.fontWeight =
+    "800";
+
+  numberLabel.style.marginBottom =
+    "8px";
+
+  numberBox.appendChild(numberLabel);
+
+
+  const numberInput =
+    document.createElement("input");
+
+  numberInput.type =
+    "number";
+
+  numberInput.min =
+    "1";
+
+  numberInput.placeholder =
+    "예: 1";
+
+  Object.assign(numberInput.style, {
+    width: "100%",
+    height: "44px",
+    padding: "0 12px",
+    boxSizing: "border-box",
+    borderRadius: "8px",
+    border: "1px solid #475569",
+    background: "#111827",
+    color: "white",
+    fontSize: "15px"
+  });
+
+  numberBox.appendChild(numberInput);
+
+  box.appendChild(numberBox);
+
+
+  // ========================================
+  // 팀 영역
+  // ========================================
+
+  const teamsContainer =
+    document.createElement("div");
+
+  teamsContainer.id =
+    "manualTeamsContainer";
+
+  box.appendChild(
+    teamsContainer
+  );
+
+
+  // ========================================
+  // 팀 추가 버튼
+  // ========================================
+
+  const addTeamButton =
+    document.createElement("button");
+
+  addTeamButton.textContent =
+    "+ 팀 추가";
+
+  Object.assign(addTeamButton.style, {
+    width: "100%",
+    padding: "13px",
+    marginTop: "5px",
+    border: "1px dashed #64748b",
+    borderRadius: "10px",
+    background: "#1e293b",
+    color: "white",
+    fontWeight: "800",
+    cursor: "pointer",
+    fontSize: "15px"
+  });
+
+  addTeamButton.onclick =
+    function() {
+
+      if (manualTeams.length >= 8) {
+        alert(
+          "팀은 최대 8팀까지 만들 수 있습니다."
+        );
+
+        return;
+      }
+
+      manualTeams.push({
+        members: [null, null, null],
+        rank: manualTeams.length + 1
+      });
+
+      renderManualTeams(
+        teamsContainer,
+        people,
+        addTeamButton
+      );
+    };
+
+  box.appendChild(addTeamButton);
+
+
+  // ========================================
+  // 팀 수 표시
+  // ========================================
+
+  const teamCountText =
+    document.createElement("div");
+
+  teamCountText.id =
+    "manualTeamCount";
+
+  Object.assign(teamCountText.style, {
+    textAlign: "center",
+    color: "#94a3b8",
+    fontSize: "13px",
+    marginTop: "10px"
+  });
+
+  box.appendChild(
+    teamCountText
+  );
+
+
+  // ========================================
+  // 버튼 영역
+  // ========================================
+
+  const buttons =
+    document.createElement("div");
+
+  Object.assign(buttons.style, {
+    display: "grid",
+    gridTemplateColumns:
+      "1fr 1fr",
+    gap: "10px",
+    marginTop: "20px"
+  });
+
+
+  const cancelButton =
+    document.createElement("button");
+
+  cancelButton.textContent =
+    "취소";
+
+  Object.assign(cancelButton.style, {
+    padding: "13px",
+    border: "none",
+    borderRadius: "10px",
+    background: "#475569",
+    color: "white",
+    fontWeight: "800",
+    cursor: "pointer"
+  });
+
+  cancelButton.onclick =
+    function() {
+      modal.remove();
+      manualTeams = [];
+    };
+
+
+  const saveButton =
+    document.createElement("button");
+
+  saveButton.textContent =
+    "내전 기록 저장";
+
+  Object.assign(saveButton.style, {
+    padding: "13px",
+    border: "none",
+    borderRadius: "10px",
+    background: "#2563eb",
+    color: "white",
+    fontWeight: "800",
+    cursor: "pointer"
+  });
+
+  saveButton.onclick =
+    function() {
+      saveManualMatch(
+        numberInput,
+        people,
+        modal,
+        saveButton
+      );
+    };
+
+
+  buttons.appendChild(
+    cancelButton
+  );
+
+  buttons.appendChild(
+    saveButton
+  );
+
+  box.appendChild(buttons);
+
+  modal.appendChild(box);
+
+  document.body.appendChild(modal);
+
+
+  renderManualTeams(
+    teamsContainer,
+    people,
+    addTeamButton
+  );
+}
+
+
+// ========================================
+// 과거 내전 팀 화면 출력
+// ========================================
+
+function renderManualTeams(
+  container,
+  people,
+  addTeamButton
+) {
+
+  container.innerHTML = "";
+
+  const selectedIds =
+    [];
+
+  manualTeams.forEach(function(team) {
+    team.members.forEach(function(id) {
+      if (id !== null && id !== "") {
+        selectedIds.push(
+          Number(id)
+        );
+      }
+    });
+  });
+
+
+  manualTeams.forEach(function(
+    team,
+    teamIndex
+  ) {
+
+    const teamBox =
+      document.createElement("div");
+
+    Object.assign(teamBox.style, {
+      background: "#1e293b",
+      borderRadius: "15px",
+      padding: "18px",
+      marginBottom: "14px"
+    });
+
+
+    // ========================================
+    // 팀 헤더
+    // ========================================
+
+    const header =
+      document.createElement("div");
+
+    Object.assign(header.style, {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: "10px",
+      marginBottom: "15px"
+    });
+
+
+    const teamTitle =
+      document.createElement("h3");
+
+    teamTitle.textContent =
+      "팀 " +
+      (teamIndex + 1);
+
+    Object.assign(teamTitle.style, {
+      margin: "0",
+      fontSize: "19px"
+    });
+
+    header.appendChild(
+      teamTitle
+    );
+
+
+    // ========================================
+    // 팀 삭제
+    // ========================================
+
+    if (manualTeams.length > 3) {
+
+      const deleteTeamButton =
+        document.createElement("button");
+
+      deleteTeamButton.textContent =
+        "팀 삭제";
+
+      Object.assign(deleteTeamButton.style, {
+        border: "none",
+        borderRadius: "7px",
+        padding: "6px 10px",
+        background: "#7f1d1d",
+        color: "white",
+        cursor: "pointer",
+        fontSize: "12px"
+      });
+
+      deleteTeamButton.onclick =
+        function() {
+
+          manualTeams.splice(
+            teamIndex,
+            1
+          );
+
+          manualTeams.forEach(
+            function(team, index) {
+              team.rank =
+                index + 1;
+            }
+          );
+
+          renderManualTeams(
+            container,
+            people,
+            addTeamButton
+          );
+        };
+
+      header.appendChild(
+        deleteTeamButton
+      );
+    }
+
+    teamBox.appendChild(
+      header
+    );
+
+
+    // ========================================
+    // 팀원 선택
+    // ========================================
+
+    team.members.forEach(
+      function(memberId, memberIndex) {
+
+        const memberRow =
+          document.createElement("div");
+
+        Object.assign(memberRow.style, {
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          marginBottom: "8px"
+        });
+
+
+        const memberNumber =
+          document.createElement("span");
+
+        memberNumber.textContent =
+          (memberIndex + 1) + ".";
+
+        Object.assign(memberNumber.style, {
+          width: "22px",
+          color: "#94a3b8",
+          fontWeight: "700"
+        });
+
+        memberRow.appendChild(
+          memberNumber
+        );
+
+
+        const select =
+          document.createElement("select");
+
+        Object.assign(select.style, {
+          flex: "1",
+          minWidth: "0",
+          height: "42px",
+          padding: "0 10px",
+          borderRadius: "8px",
+          border: "1px solid #475569",
+          background: "#111827",
+          color: "white"
+        });
+
+
+        const emptyOption =
+          document.createElement("option");
+
+        emptyOption.value = "";
+
+        emptyOption.textContent =
+          "팀원 선택";
+
+        select.appendChild(
+          emptyOption
+        );
+
+
+        people.forEach(function(person) {
+
+          const option =
+            document.createElement("option");
+
+          option.value =
+            person.id;
+
+          option.textContent =
+            person.name +
+            (
+              person.nickname
+                ? "  @" + person.nickname
+                : ""
+            );
+
+          if (
+            Number(memberId) ===
+            Number(person.id)
+          ) {
+            option.selected =
+              true;
+          }
+
+
+          // ========================================
+          // 다른 팀에서 이미 선택된 사람
+          // ========================================
+
+          const usedByOtherSlot =
+            selectedIds.includes(
+              Number(person.id)
+            ) &&
+            Number(memberId) !==
+            Number(person.id);
+
+          if (usedByOtherSlot) {
+            option.disabled =
+              true;
+          }
+
+          select.appendChild(
+            option
+          );
+        });
+
+
+        select.onchange =
+          function() {
+
+            const value =
+              select.value;
+
+            if (!value) {
+              team.members[
+                memberIndex
+              ] = null;
+            } else {
+
+              const duplicate =
+                manualTeams.some(
+                  function(otherTeam, otherTeamIndex) {
+
+                    return otherTeam.members.some(
+                      function(otherMember, otherMemberIndex) {
+
+                        if (
+                          otherTeamIndex ===
+                            teamIndex &&
+                          otherMemberIndex ===
+                            memberIndex
+                        ) {
+                          return false;
+                        }
+
+                        return Number(otherMember) ===
+                          Number(value);
+                      }
+                    );
+                  }
+                );
+
+              if (duplicate) {
+
+                alert(
+                  "같은 사람을 여러 팀에 넣을 수 없습니다."
+                );
+
+                select.value =
+                  "";
+
+                team.members[
+                  memberIndex
+                ] = null;
+
+                return;
+              }
+
+              team.members[
+                memberIndex
+              ] =
+                Number(value);
+            }
+
+            renderManualTeams(
+              container,
+              people,
+              addTeamButton
+            );
+          };
+
+
+        memberRow.appendChild(
+          select
+        );
+
+
+        // ========================================
+        // 팀원 삭제
+        // ========================================
+
+        if (team.members.length > 1) {
+
+          const removeMemberButton =
+            document.createElement("button");
+
+          removeMemberButton.textContent =
+            "−";
+
+          Object.assign(
+            removeMemberButton.style,
+            {
+              width: "40px",
+              height: "40px",
+              border: "none",
+              borderRadius: "8px",
+              background: "#475569",
+              color: "white",
+              fontSize: "20px",
+              cursor: "pointer"
+            }
+          );
+
+          removeMemberButton.onclick =
+            function() {
+
+              team.members.splice(
+                memberIndex,
+                1
+              );
+
+              renderManualTeams(
+                container,
+                people,
+                addTeamButton
+              );
+            };
+
+          memberRow.appendChild(
+            removeMemberButton
+          );
+        }
+
+        teamBox.appendChild(
+          memberRow
+        );
+      }
+    );
+
+
+    // ========================================
+    // 팀원 추가
+    // ========================================
+
+    const addMemberButton =
+      document.createElement("button");
+
+    addMemberButton.textContent =
+      "+ 팀원";
+
+    Object.assign(addMemberButton.style, {
+      marginTop: "4px",
+      padding: "7px 12px",
+      border: "none",
+      borderRadius: "7px",
+      background: "#334155",
+      color: "white",
+      cursor: "pointer",
+      fontWeight: "700"
+    });
+
+    addMemberButton.onclick =
+      function() {
+
+        team.members.push(
+          null
+        );
+
+        renderManualTeams(
+          container,
+          people,
+          addTeamButton
+        );
+      };
+
+    teamBox.appendChild(
+      addMemberButton
+    );
+
+
+    // ========================================
+    // 순위
+    // ========================================
+
+    const rankRow =
+      document.createElement("div");
+
+    Object.assign(rankRow.style, {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginTop: "15px",
+      paddingTop: "14px",
+      borderTop: "1px solid #334155"
+    });
+
+
+    const rankLabel =
+      document.createElement("span");
+
+    rankLabel.textContent =
+      "팀 순위";
+
+    rankLabel.style.fontWeight =
+      "800";
+
+    rankRow.appendChild(
+      rankLabel
+    );
+
+
+    const rankSelect =
+      document.createElement("select");
+
+    Object.assign(rankSelect.style, {
+      width: "120px",
+      height: "38px",
+      borderRadius: "8px",
+      border: "1px solid #475569",
+      background: "#111827",
+      color: "white",
+      padding: "0 8px"
+    });
+
+
+    for (
+      let rank = 1;
+      rank <= manualTeams.length;
+      rank++
+    ) {
+
+      const option =
+        document.createElement("option");
+
+      option.value =
+        rank;
+
+      option.textContent =
+        rank + "위";
+
+      if (
+        Number(team.rank) ===
+        rank
+      ) {
+        option.selected =
+          true;
+      }
+
+      rankSelect.appendChild(
+        option
+      );
+    }
+
+
+    rankSelect.onchange =
+      function() {
+
+        const newRank =
+          Number(
+            rankSelect.value
+          );
+
+        const duplicate =
+          manualTeams.some(
+            function(otherTeam, otherIndex) {
+
+              return (
+                otherIndex !== teamIndex &&
+                Number(otherTeam.rank) ===
+                  newRank
+              );
+            }
+          );
+
+        if (duplicate) {
+
+          alert(
+            "같은 순위는 선택할 수 없습니다."
+          );
+
+          rankSelect.value =
+            team.rank;
+
+          return;
+        }
+
+        team.rank =
+          newRank;
+      };
+
+
+    rankRow.appendChild(
+      rankSelect
+    );
+
+    teamBox.appendChild(
+      rankRow
+    );
+
+    container.appendChild(
+      teamBox
+    );
+  });
+
+
+  // ========================================
+  // 팀 추가 버튼 상태
+  // ========================================
+
+  if (manualTeams.length >= 8) {
+
+    addTeamButton.disabled =
+      true;
+
+    addTeamButton.textContent =
+      "최대 8팀";
+
+    addTeamButton.style.opacity =
+      "0.5";
+
+    addTeamButton.style.cursor =
+      "not-allowed";
+
+  } else {
+
+    addTeamButton.disabled =
+      false;
+
+    addTeamButton.textContent =
+      "+ 팀 추가";
+
+    addTeamButton.style.opacity =
+      "1";
+
+    addTeamButton.style.cursor =
+      "pointer";
+  }
+
+
+  const countText =
+    document.getElementById(
+      "manualTeamCount"
+    );
+
+  if (countText) {
+    countText.textContent =
+      "현재 " +
+      manualTeams.length +
+      "팀 / 최대 8팀";
+  }
+}
+
+
+// ========================================
+// 과거 내전 저장
+// ========================================
+
+async function saveManualMatch(
+  numberInput,
+  people,
+  modal,
+  saveButton
+) {
+
+  // ========================================
+  // 내전 번호 검사
+  // ========================================
+
+  const matchNumber =
+    Number(
+      numberInput.value
+    );
+
+  if (
+    !matchNumber ||
+    matchNumber < 1
+  ) {
+    alert(
+      "내전 번호를 입력해주세요."
+    );
+
+    numberInput.focus();
+
+    return;
+  }
+
+
+  // ========================================
+  // 팀 수 검사
+  // ========================================
+
+  if (
+    manualTeams.length < 1 ||
+    manualTeams.length > 8
+  ) {
+    alert(
+      "팀 수를 확인해주세요."
+    );
+
+    return;
+  }
+
+
+  // ========================================
+  // 팀원 검사
+  // ========================================
+
+  const usedPeople =
+    new Set();
+
+  for (
+    let i = 0;
+    i < manualTeams.length;
+    i++
+  ) {
+
+    const team =
+      manualTeams[i];
+
+    if (
+      !team.members ||
+      team.members.length === 0
+    ) {
+      alert(
+        "팀 " +
+        (i + 1) +
+        "에 팀원이 없습니다."
+      );
+
+      return;
+    }
+
+    for (
+      let j = 0;
+      j < team.members.length;
+      j++
+    ) {
+
+      const personId =
+        team.members[j];
+
+      if (!personId) {
+
+        alert(
+          "팀 " +
+          (i + 1) +
+          "의 팀원을 모두 선택해주세요."
+        );
+
+        return;
+      }
+
+      const numericId =
+        Number(personId);
+
+      if (
+        usedPeople.has(
+          numericId
+        )
+      ) {
+
+        alert(
+          "같은 사람이 여러 팀에 들어가 있습니다."
+        );
+
+        return;
+      }
+
+      usedPeople.add(
+        numericId
+      );
+    }
+  }
+
+
+  // ========================================
+  // 순위 검사
+  // ========================================
+
+  const ranks =
+    manualTeams.map(
+      function(team) {
+        return Number(
+          team.rank
+        );
+      }
+    );
+
+  const uniqueRanks =
+    new Set(ranks);
+
+  if (
+    uniqueRanks.size !==
+    ranks.length
+  ) {
+
+    alert(
+      "같은 순위를 가진 팀이 있습니다."
+    );
+
+    return;
+  }
+
+  for (
+    let i = 0;
+    i < ranks.length;
+    i++
+  ) {
+
+    if (
+      !ranks[i] ||
+      ranks[i] < 1 ||
+      ranks[i] > manualTeams.length
+    ) {
+
+      alert(
+        "팀 순위를 확인해주세요."
+      );
+
+      return;
+    }
+  }
+
+
+  // ========================================
+  // 기존 번호 중복 검사
+  // ========================================
+
+  const {
+    data: existingMatch,
+    error: existingError
+  } =
+    await supabaseClient
+      .from("matches")
+      .select("id")
+      .eq(
+        "match_number",
+        matchNumber
+      )
+      .limit(1);
+
+  if (existingError) {
+    console.error(
+      existingError
+    );
+
+    alert(
+      "기존 내전 번호를 확인하지 못했습니다."
+    );
+
+    return;
+  }
+
+  if (
+    existingMatch &&
+    existingMatch.length > 0
+  ) {
+
+    alert(
+      "#" +
+      matchNumber +
+      " 내전은 이미 존재합니다.\n\n" +
+      "다른 내전 번호를 입력해주세요."
+    );
+
+    return;
+  }
+
+
+  // ========================================
+  // 저장 시작
+  // ========================================
+
+  saveButton.disabled =
+    true;
+
+  saveButton.textContent =
+    "저장 중...";
+
+
+  // ========================================
+  // matches 저장
+  // ========================================
+
+  const {
+    data: matchData,
+    error: matchError
+  } =
+    await supabaseClient
+      .from("matches")
+      .insert([
+        {
+          match_number:
+            matchNumber
+        }
+      ])
+      .select()
+      .single();
+
+
+  if (matchError) {
+
+    console.error(
+      matchError
+    );
+
+    saveButton.disabled =
+      false;
+
+    saveButton.textContent =
+      "내전 기록 저장";
+
+    alert(
+      "내전 기록 저장에 실패했습니다."
+    );
+
+    return;
+  }
+
+
+  const matchId =
+    matchData.id;
+
+
+  // ========================================
+  // 팀 저장
+  // ========================================
+
+  for (
+    let i = 0;
+    i < manualTeams.length;
+    i++
+  ) {
+
+    const team =
+      manualTeams[i];
+
+    const {
+      data: teamData,
+      error: teamError
+    } =
+      await supabaseClient
+        .from("match_teams")
+        .insert([
+          {
+            match_id:
+              matchId,
+
+            team_number:
+              i + 1,
+
+            rank:
+              Number(team.rank)
+          }
+        ])
+        .select()
+        .single();
+
+
+    if (teamError) {
+
+      console.error(
+        teamError
+      );
+
+      await supabaseClient
+        .from("matches")
+        .delete()
+        .eq(
+          "id",
+          matchId
+        );
+
+      saveButton.disabled =
+        false;
+
+      saveButton.textContent =
+        "내전 기록 저장";
+
+      alert(
+        "팀 기록 저장에 실패했습니다."
+      );
+
+      return;
+    }
+
+
+    // ========================================
+    // 팀원 저장
+    // ========================================
+
+    const playerRows =
+      team.members.map(
+        function(personId) {
+          return {
+            team_id:
+              teamData.id,
+
+            person_id:
+              Number(personId)
+          };
+        }
+      );
 
 
     const {
@@ -2267,10 +3427,10 @@ async function saveMatchResult() {
 
 
     if (playerError) {
+
       console.error(
         playerError
       );
-
 
       await supabaseClient
         .from("matches")
@@ -2280,6 +3440,11 @@ async function saveMatchResult() {
           matchId
         );
 
+      saveButton.disabled =
+        false;
+
+      saveButton.textContent =
+        "내전 기록 저장";
 
       alert(
         "팀원 기록 저장에 실패했습니다."
@@ -2295,21 +3460,21 @@ async function saveMatchResult() {
   // ========================================
 
   alert(
-    nextMatchNumber +
-    "번째 내전 기록이 저장되었습니다."
+    "#" +
+    matchNumber +
+    " 과거 내전 기록이 저장되었습니다."
   );
 
+  modal.remove();
 
-  if (teamResult) {
-    teamResult.innerHTML =
-      "<p class='team-success'>" +
-      nextMatchNumber +
-      "번째 내전 기록이 저장되었습니다." +
-      "</p>";
-  }
+  manualTeams = [];
 
 
-  currentTeams = [];
+  // ========================================
+  // 내전 기록 새로고침
+  // ========================================
+
+  loadMatchHistory();
 }
 
 
@@ -2330,7 +3495,6 @@ async function loadMatchHistory() {
     "내전 기록을 불러오는 중..." +
     "</p>";
 
-
   const {
     data: matches,
     error: matchError
@@ -2345,7 +3509,6 @@ async function loadMatchHistory() {
         }
       );
 
-
   if (matchError) {
     console.error(
       matchError
@@ -2359,7 +3522,6 @@ async function loadMatchHistory() {
     return;
   }
 
-
   if (
     !matches ||
     matches.length === 0
@@ -2372,17 +3534,15 @@ async function loadMatchHistory() {
     return;
   }
 
-
   historyList.innerHTML = "";
 
-
   for (const match of matches) {
+
     const matchBox =
       document.createElement("div");
 
     matchBox.className =
       "history-match";
-
 
     const matchTitle =
       document.createElement("h2");
@@ -2398,7 +3558,6 @@ async function loadMatchHistory() {
     matchBox.appendChild(
       matchTitle
     );
-
 
     const {
       data: teams,
@@ -2418,7 +3577,6 @@ async function loadMatchHistory() {
           }
         );
 
-
     if (teamError) {
       console.error(
         teamError
@@ -2427,11 +3585,11 @@ async function loadMatchHistory() {
       continue;
     }
 
-
     if (
       !teams ||
       teams.length === 0
     ) {
+
       const empty =
         document.createElement("p");
 
@@ -2452,21 +3610,19 @@ async function loadMatchHistory() {
       continue;
     }
 
-
     for (const team of teams) {
+
       const teamBox =
         document.createElement("div");
 
       teamBox.className =
         "history-team";
 
-
       const teamHeader =
         document.createElement("div");
 
       teamHeader.className =
         "history-team-header";
-
 
       const teamName =
         document.createElement("h3");
@@ -2478,12 +3634,6 @@ async function loadMatchHistory() {
       teamHeader.appendChild(
         teamName
       );
-
-
-      // ========================================
-      // 순위
-      // 클릭하면 상세 기록
-      // ========================================
 
       const rank =
         document.createElement("span");
@@ -2500,7 +3650,6 @@ async function loadMatchHistory() {
       rank.title =
         "내전 상세 기록 보기";
 
-
       rank.addEventListener(
         "click",
         function() {
@@ -2510,7 +3659,6 @@ async function loadMatchHistory() {
         }
       );
 
-
       teamHeader.appendChild(
         rank
       );
@@ -2518,11 +3666,6 @@ async function loadMatchHistory() {
       teamBox.appendChild(
         teamHeader
       );
-
-
-      // ========================================
-      // 팀원
-      // ========================================
 
       const {
         data: players,
@@ -2536,7 +3679,6 @@ async function loadMatchHistory() {
             team.id
           );
 
-
       if (playerError) {
         console.error(
           playerError
@@ -2545,25 +3687,23 @@ async function loadMatchHistory() {
         continue;
       }
 
-
       const playerList =
         document.createElement("div");
 
       playerList.className =
         "history-players";
 
-
       if (
         players &&
         players.length > 0
       ) {
+
         const playerIds =
           players.map(
             function(player) {
               return player.person_id;
             }
           );
-
 
         const {
           data: people,
@@ -2577,14 +3717,15 @@ async function loadMatchHistory() {
               playerIds
             );
 
-
         if (peopleError) {
           console.error(
             peopleError
           );
         } else if (people) {
+
           people.forEach(
             function(person) {
+
               const player =
                 document.createElement(
                   "span"
@@ -2604,7 +3745,6 @@ async function loadMatchHistory() {
         }
       }
 
-
       teamBox.appendChild(
         playerList
       );
@@ -2613,7 +3753,6 @@ async function loadMatchHistory() {
         teamBox
       );
     }
-
 
     historyList.appendChild(
       matchBox
@@ -2627,9 +3766,6 @@ async function loadMatchHistory() {
 // ========================================
 
 async function openMatchDetail(matchId) {
-  // ========================================
-  // 내전 정보
-  // ========================================
 
   const {
     data: match,
@@ -2644,7 +3780,6 @@ async function openMatchDetail(matchId) {
       )
       .single();
 
-
   if (matchError) {
     console.error(
       matchError
@@ -2656,11 +3791,6 @@ async function openMatchDetail(matchId) {
 
     return;
   }
-
-
-  // ========================================
-  // 팀 정보
-  // ========================================
 
   const {
     data: teams,
@@ -2680,7 +3810,6 @@ async function openMatchDetail(matchId) {
         }
       );
 
-
   if (teamError) {
     console.error(
       teamError
@@ -2693,11 +3822,6 @@ async function openMatchDetail(matchId) {
     return;
   }
 
-
-  // ========================================
-  // 기존 모달 제거
-  // ========================================
-
   const oldModal =
     document.getElementById(
       "matchDetailModal"
@@ -2706,11 +3830,6 @@ async function openMatchDetail(matchId) {
   if (oldModal) {
     oldModal.remove();
   }
-
-
-  // ========================================
-  // 모달
-  // ========================================
 
   const modal =
     document.createElement("div");
@@ -2733,11 +3852,6 @@ async function openMatchDetail(matchId) {
     boxSizing: "border-box"
   });
 
-
-  // ========================================
-  // 내용 박스
-  // ========================================
-
   const box =
     document.createElement("div");
 
@@ -2751,11 +3865,6 @@ async function openMatchDetail(matchId) {
     color: "white",
     boxSizing: "border-box"
   });
-
-
-  // ========================================
-  // 제목
-  // ========================================
 
   const title =
     document.createElement("h2");
@@ -2776,12 +3885,8 @@ async function openMatchDetail(matchId) {
 
   box.appendChild(title);
 
-
-  // ========================================
-  // 팀 출력
-  // ========================================
-
   for (const team of teams) {
+
     const teamBox =
       document.createElement("div");
 
@@ -2791,7 +3896,6 @@ async function openMatchDetail(matchId) {
       padding: "18px",
       marginBottom: "12px"
     });
-
 
     const teamTitle =
       document.createElement("div");
@@ -2803,18 +3907,15 @@ async function openMatchDetail(matchId) {
       team.rank +
       "위";
 
-
     Object.assign(teamTitle.style, {
       fontSize: "18px",
       fontWeight: "900",
       marginBottom: "12px"
     });
 
-
     teamBox.appendChild(
       teamTitle
     );
-
 
     const {
       data: players,
@@ -2828,7 +3929,6 @@ async function openMatchDetail(matchId) {
           team.id
         );
 
-
     if (playerError) {
       console.error(
         playerError
@@ -2837,18 +3937,17 @@ async function openMatchDetail(matchId) {
       continue;
     }
 
-
     if (
       players &&
       players.length > 0
     ) {
+
       const playerIds =
         players.map(
           function(player) {
             return player.person_id;
           }
         );
-
 
       const {
         data: people,
@@ -2862,14 +3961,15 @@ async function openMatchDetail(matchId) {
             playerIds
           );
 
-
       if (peopleError) {
         console.error(
           peopleError
         );
       } else if (people) {
+
         people.forEach(
           function(person) {
+
             const player =
               document.createElement(
                 "div"
@@ -2878,13 +3978,11 @@ async function openMatchDetail(matchId) {
             player.textContent =
               person.name;
 
-
             Object.assign(player.style, {
               padding: "8px 0",
               color: "#cbd5e1",
               fontWeight: "700"
             });
-
 
             teamBox.appendChild(
               player
@@ -2894,7 +3992,6 @@ async function openMatchDetail(matchId) {
       }
     }
 
-
     box.appendChild(
       teamBox
     );
@@ -2902,7 +3999,7 @@ async function openMatchDetail(matchId) {
 
 
   // ========================================
-  // 내전 삭제 버튼
+  // 내전 삭제
   // ========================================
 
   const deleteMatchButton =
@@ -2927,9 +4024,9 @@ async function openMatchDetail(matchId) {
     }
   );
 
-
   deleteMatchButton.onclick =
     async function() {
+
       const confirmed =
         confirm(
           "#" +
@@ -2938,18 +4035,15 @@ async function openMatchDetail(matchId) {
           "이 내전의 팀과 팀원 기록도 함께 삭제됩니다."
         );
 
-
       if (!confirmed) {
         return;
       }
-
 
       deleteMatchButton.disabled =
         true;
 
       deleteMatchButton.textContent =
         "삭제 중...";
-
 
       const {
         error: deleteError
@@ -2962,7 +4056,6 @@ async function openMatchDetail(matchId) {
             match.id
           );
 
-
       if (deleteError) {
         console.error(
           deleteError
@@ -2971,7 +4064,6 @@ async function openMatchDetail(matchId) {
         alert(
           "내전 기록 삭제에 실패했습니다."
         );
-
 
         deleteMatchButton.disabled =
           false;
@@ -2982,19 +4074,16 @@ async function openMatchDetail(matchId) {
         return;
       }
 
-
       alert(
         "#" +
         match.match_number +
         " 내전 기록이 삭제되었습니다."
       );
 
-
       modal.remove();
 
       loadMatchHistory();
     };
-
 
   box.appendChild(
     deleteMatchButton
@@ -3002,7 +4091,7 @@ async function openMatchDetail(matchId) {
 
 
   // ========================================
-  // 닫기 버튼
+  // 닫기
   // ========================================
 
   const closeButton =
@@ -3010,7 +4099,6 @@ async function openMatchDetail(matchId) {
 
   closeButton.textContent =
     "닫기";
-
 
   Object.assign(
     closeButton.style,
@@ -3028,21 +4116,14 @@ async function openMatchDetail(matchId) {
     }
   );
 
-
   closeButton.onclick =
     function() {
       modal.remove();
     };
 
-
   box.appendChild(
     closeButton
   );
-
-
-  // ========================================
-  // 모달 출력
-  // ========================================
 
   modal.appendChild(
     box
@@ -3060,3 +4141,4 @@ async function openMatchDetail(matchId) {
 
 loadPeople();
 loadParticipants();
+```
