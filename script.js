@@ -1,4 +1,4 @@
-```javascript
+javascript
 // ========================================
 // ER123 - 메인 스크립트
 // ========================================
@@ -4141,4 +4141,4 @@ async function openMatchDetail(matchId) {
 
 loadPeople();
 loadParticipants();
-```
+
