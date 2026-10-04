@@ -2,18 +2,31 @@
 
 <html lang="ko">
 
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
 
-<title>ER123 티어표</title>
+  <meta charset="UTF-8">
 
-<link rel="stylesheet" href="style.css"> </head>
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
+>
+
+  <title>ER123 티어표</title>
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
 
 <body>
 
-<!-- ========================= 왼쪽 사이드바 ========================== -->
+  <!-- =========================
+       왼쪽 사이드바
+  ========================== -->
 
-<aside class="sidebar">
+  <aside class="sidebar">
 
+```
 <div class="sidebar-logo">
   ER123
 </div>
@@ -49,18 +62,25 @@
   </button>
 
 </nav>
+```
 
-</aside>
+  </aside>
 
-<!-- ========================= 오른쪽 메인 영역 ========================== -->
+  <!-- =========================
+       오른쪽 메인 영역
+  ========================== -->
 
-<main class="main-content">
+  <main class="main-content">
 
+```
 <!-- =========================
      티어표
 ========================== -->
 
-<div id="tierPage" class="page active-page">
+<div
+  id="tierPage"
+  class="page active-page"
+>
 
   <div class="container">
 
@@ -95,33 +115,6 @@
 
     <div id="peopleList"></div>
 
-
-    <!-- 사람 추가 -->
-
-    <h2>사람 추가</h2>
-
-    <div class="search-box">
-
-      <input
-        type="text"
-        id="nameInput"
-        placeholder="사람 이름 입력"
-      >
-
-      <select id="tierInput">
-
-        <option value="S">S</option>
-        <option value="A">A</option>
-        <option value="B">B</option>
-
-      </select>
-
-      <button onclick="addPerson()">
-        추가
-      </button>
-
-    </div>
-
   </div>
 
 </div>
@@ -131,7 +124,10 @@
      프로필
 ========================== -->
 
-<div id="profilePage" class="page profile-page">
+<div
+  id="profilePage"
+  class="page profile-page"
+>
 
   <div class="profile-container">
 
@@ -141,10 +137,52 @@
       등록된 프로필을 확인하고 수정할 수 있습니다.
     </p>
 
+
+    <!-- 프로필 목록 -->
+
     <div
       id="profileList"
       class="profile-list"
     ></div>
+
+
+    <!-- 새 프로필 추가 -->
+
+    <div class="add-profile-box">
+
+      <h2>새 프로필 추가</h2>
+
+      <div class="add-profile-form">
+
+        <input
+          type="text"
+          id="nameInput"
+          placeholder="사람 이름 입력"
+        >
+
+        <select id="tierInput">
+
+          <option value="S">
+            S TIER
+          </option>
+
+          <option value="A">
+            A TIER
+          </option>
+
+          <option value="B">
+            B TIER
+          </option>
+
+        </select>
+
+        <button onclick="addPerson()">
+          프로필 추가
+        </button>
+
+      </div>
+
+    </div>
 
   </div>
 
@@ -155,7 +193,10 @@
      팀 만들기
 ========================== -->
 
-<div id="teamPage" class="page">
+<div
+  id="teamPage"
+  class="page"
+>
 
   <div class="placeholder-page">
 
@@ -174,7 +215,10 @@
      팀 목록
 ========================== -->
 
-<div id="teamsPage" class="page">
+<div
+  id="teamsPage"
+  class="page"
+>
 
   <div class="placeholder-page">
 
@@ -187,22 +231,101 @@
   </div>
 
 </div>
+```
 
-</main>
+  </main>
 
-<!-- ========================= Supabase ========================== -->
+  <!-- =========================
+       Supabase
+  ========================== -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script> const SUPABASE_URL = "https://jayxdveislretdubyjjx.supabase.co"; const SUPABASE_KEY = "sb_publishable_KHKp-V6XfNPc-Vvv43ALmA_0KsbGquF"; const supabaseClient = window.supabase.createClient( SUPABASE_URL, SUPABASE_KEY ); </script>
+  <script>
 
-<!-- ========================= 기존 JavaScript ========================== -->
+    const SUPABASE_URL =
+      "https://jayxdveislretdubyjjx.supabase.co";
 
-<script src="script.js?v=3"></script>
+    const SUPABASE_KEY =
+      "sb_publishable_KHKp-V6XfNPc-Vvv43ALmA_0KsbGquF";
 
-<!-- ========================= 페이지 전환 ========================== -->
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
 
-<script> function showPage(page, button) { // 모든 페이지 숨기기 document.querySelectorAll(".page").forEach(function(element) { element.classList.remove("active-page"); }); // 모든 메뉴 선택 해제 document.querySelectorAll(".sidebar-item").forEach(function(element) { element.classList.remove("active"); }); // 선택한 페이지 표시 const targetPage = document.getElementById(page + "Page"); if (targetPage) { targetPage.classList.add("active-page"); } // 클릭한 메뉴 활성화 if (button) { button.classList.add("active"); } // 프로필 페이지를 열었을 때 // 프로필 목록 불러오기 if (page === "profile") { loadProfiles(); } } </script>
+  </script>
+
+  <!-- =========================
+       기존 JavaScript
+  ========================== -->
+
+  <script src="script.js?v=3"></script>
+
+  <!-- =========================
+       페이지 전환
+  ========================== -->
+
+  <script>
+
+    function showPage(page, button) {
+
+      // 모든 페이지 숨기기
+
+      document
+        .querySelectorAll(".page")
+        .forEach(function(element) {
+
+          element.classList.remove("active-page");
+
+        });
+
+
+      // 모든 메뉴 선택 해제
+
+      document
+        .querySelectorAll(".sidebar-item")
+        .forEach(function(element) {
+
+          element.classList.remove("active");
+
+        });
+
+
+      // 선택한 페이지 표시
+
+      const targetPage =
+        document.getElementById(page + "Page");
+
+      if (targetPage) {
+
+        targetPage.classList.add("active-page");
+
+      }
+
+
+      // 클릭한 메뉴 활성화
+
+      if (button) {
+
+        button.classList.add("active");
+
+      }
+
+
+      // 프로필 페이지를 열었을 때
+      // 프로필 목록 불러오기
+
+      if (page === "profile") {
+
+        loadProfiles();
+
+      }
+
+    }
+
+  </script>
 
 </body>
 
