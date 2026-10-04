@@ -588,7 +588,7 @@ async function saveProfile(
     const { error: uploadError } =
       await supabaseClient
         .storage
-        .from("profile-images")
+        .from("progile-images")
         .upload(
           filePath,
           imageFile,
@@ -611,7 +611,7 @@ async function saveProfile(
     const { data: publicData } =
       supabaseClient
         .storage
-        .from("profile-images")
+        .from("progile-images")
         .getPublicUrl(filePath);
 
     profileImage =
