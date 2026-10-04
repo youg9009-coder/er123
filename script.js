@@ -965,6 +965,32 @@ teams.forEach(function(team, teamIndex) {
   rankSelect.className = "team-rank-select";
   rankSelect.dataset.teamIndex = teamIndex;
 
+  rankSelect.dataset.previousValue = String(teamIndex + 1);
+  
+rankSelect.addEventListener("change", function() {
+  const selects = document.querySelectorAll(".team-rank-select");
+
+  const selectedRanks = [];
+
+  selects.forEach(function(select) {
+    selectedRanks.push(select.value);
+  });
+
+  const duplicates = selectedRanks.filter(function(rank, index) {
+    return selectedRanks.indexOf(rank) !== index;
+  });
+
+  if (duplicates.length > 0) {
+    alert("같은 순위는 선택할 수 없습니다.");
+
+    // 현재 선택을 원래 값으로 되돌림
+    select.value = select.dataset.previousValue || "1";
+    return;
+  }
+
+  select.dataset.previousValue = select.value;
+});
+  
   for (let rank = 1; rank <= teams.length; rank++) {
     const option = document.createElement("option");
 
