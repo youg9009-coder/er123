@@ -625,6 +625,113 @@ async function deletePerson(id, modal) {
   loadPeople();
 }
 
+// 프로필 목록
+
+async function loadProfiles() {
+
+  const profileList = document.getElementById("profileList");
+
+  if (!profileList) return;
+
+  profileList.innerHTML = "";
+
+  const { data, error } = await supabaseClient
+    .from("people")
+    .select("*")
+    .order("id", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    profileList.innerHTML = "<p>프로필을 불러오지 못했습니다.</p>";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    profileList.innerHTML =
+      "<p class='profile-empty'>등록된 프로필이 없습니다.</p>";
+    return;
+  }
+
+  data.forEach(function(person) {
+
+    const card = document.createElement("div");
+    card.className = "profile-card";
+
+    // 프로필 사진
+    const image = document.createElement("img");
+
+    if (person.profile_image) {
+      image.src = person.profile_image;
+    } else {
+      image.src =
+        "https://ui-avatars.com/api/?name=" +
+        encodeURIComponent(person.name) +
+        "&background=334155&color=ffffff&size=200";
+    }
+
+    image.alt = person.name;
+    image.className = "profile-image";
+
+    card.appendChild(image);
+
+
+    // 이름
+    const name = document.createElement("h2");
+    name.textContent = person.name;
+    name.className = "profile-name";
+
+    card.appendChild(name);
+
+
+    // 닉네임
+    if (person.nickname) {
+
+      const nickname = document.createElement("div");
+
+      nickname.textContent = "@" + person.nickname;
+      nickname.className = "profile-nickname";
+
+      card.appendChild(nickname);
+    }
+
+
+    // 자기소개
+    if (person.description) {
+
+      const description = document.createElement("p");
+
+      description.textContent = person.description;
+      description.className = "profile-description";
+
+      card.appendChild(description);
+    }
+
+
+    // 티어
+    const tier = document.createElement("div");
+
+    tier.textContent = person.tier;
+    tier.className = "profile-tier tier-" + person.tier;
+
+    card.appendChild(tier);
+
+
+    // 수정 버튼
+    const editButton = document.createElement("button");
+
+    editButton.textContent = "프로필 수정";
+    editButton.className = "profile-edit-button";
+
+    editButton.onclick = function() {
+      openEditModal(person);
+    };
+
+    card.appendChild(editButton);
+
+
+    profileList.appendChild(card);
+  });
+}
 
 // 페이지가 열리면 전체 목록 표시
 loadPeople();
