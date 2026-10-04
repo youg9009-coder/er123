@@ -890,92 +890,109 @@ async function createRandomTeam() {
 currentTeams = teams;
 
   // ========================================
-  // 결과 출력
-  // ========================================
+// 결과 출력
+// ========================================
 
-  teamResult.innerHTML = "";
+teamResult.innerHTML = "";
 
-  const title = document.createElement("h2");
-  title.textContent = "랜덤 팀";
-  title.className = "team-result-title";
-  teamResult.appendChild(title);
-
-
-  teams.forEach(function(team, teamIndex) {
-    const teamTitle =
-      document.createElement("h3");
-
-    teamTitle.textContent =
-      "팀 " + (teamIndex + 1);
-
-    teamTitle.style.margin = "30px 0 15px";
-    teamTitle.style.fontSize = "22px";
-    teamTitle.style.color = "white";
-
-    teamResult.appendChild(teamTitle);
+const title = document.createElement("h2");
+title.textContent = "랜덤 팀";
+title.className = "team-result-title";
+teamResult.appendChild(title);
 
 
-    const teamCards =
-      document.createElement("div");
+// 팀 표시
+teams.forEach(function(team, teamIndex) {
+  const teamBox = document.createElement("div");
+  teamBox.className = "team-box";
 
-    teamCards.className = "team-cards";
+  const teamTitle = document.createElement("h3");
+  teamTitle.textContent = "팀 " + (teamIndex + 1);
+  teamTitle.style.margin = "30px 0 15px";
+  teamTitle.style.fontSize = "22px";
+  teamTitle.style.color = "white";
 
+  teamBox.appendChild(teamTitle);
 
-    team.forEach(function(person) {
-      const card =
-        document.createElement("div");
+  const teamCards = document.createElement("div");
+  teamCards.className = "team-cards";
 
-      card.className = "team-card";
+  team.forEach(function(person) {
+    const card = document.createElement("div");
+    card.className = "team-card";
 
+    const image = document.createElement("img");
 
-      // 프로필 사진
-      const image =
-        document.createElement("img");
+    image.src = person.profile_image
+      ? person.profile_image
+      : "https://ui-avatars.com/api/?name=" +
+        encodeURIComponent(person.name) +
+        "&background=334155&color=ffffff&size=200";
 
-      image.src = person.profile_image
-        ? person.profile_image
-        : "https://ui-avatars.com/api/?name=" +
-          encodeURIComponent(person.name) +
-          "&background=334155&color=ffffff&size=200";
+    image.alt = person.name;
+    image.className = "team-image";
 
-      image.alt = person.name;
-      image.className = "team-image";
+    card.appendChild(image);
 
-      card.appendChild(image);
+    const name = document.createElement("h3");
+    name.textContent = person.name;
+    name.className = "team-name";
 
+    card.appendChild(name);
 
-      // 이름
-      const name =
-        document.createElement("h3");
+    if (person.nickname) {
+      const nickname = document.createElement("div");
+      nickname.textContent = "@" + person.nickname;
+      nickname.className = "team-nickname";
+      card.appendChild(nickname);
+    }
 
-      name.textContent = person.name;
-      name.className = "team-name";
-
-      card.appendChild(name);
-
-
-      // 닉네임
-      if (person.nickname) {
-        const nickname =
-          document.createElement("div");
-
-        nickname.textContent =
-          "@" + person.nickname;
-
-        nickname.className =
-          "team-nickname";
-
-        card.appendChild(nickname);
-      }
-
-      teamCards.appendChild(card);
-    });
-
-
-    teamResult.appendChild(teamCards);
+    teamCards.appendChild(card);
   });
-}
 
+  teamBox.appendChild(teamCards);
+
+
+  // 순위 선택
+  const rankBox = document.createElement("div");
+  rankBox.className = "team-rank-box";
+
+  const rankLabel = document.createElement("span");
+  rankLabel.textContent = "순위";
+  rankLabel.className = "team-rank-label";
+
+  const rankSelect = document.createElement("select");
+  rankSelect.className = "team-rank-select";
+  rankSelect.dataset.teamIndex = teamIndex;
+
+  for (let rank = 1; rank <= teams.length; rank++) {
+    const option = document.createElement("option");
+
+    option.value = rank;
+    option.textContent = rank + "위";
+
+    rankSelect.appendChild(option);
+  }
+
+  rankBox.appendChild(rankLabel);
+  rankBox.appendChild(rankSelect);
+
+  teamBox.appendChild(rankBox);
+  teamResult.appendChild(teamBox);
+});
+
+
+// 저장 버튼
+const saveButton = document.createElement("button");
+
+saveButton.textContent = "내전 기록 저장";
+saveButton.className = "save-match-button";
+
+saveButton.onclick = function() {
+  saveMatchResult();
+};
+
+teamResult.appendChild(saveButton);
 
 // ========================================
 // 초기 실행
