@@ -6,11 +6,10 @@
 
   <meta charset="UTF-8">
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
-
->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>ER123 티어표</title>
 
@@ -26,50 +25,51 @@ content="width=device-width, initial-scale=1.0"
 
   <aside class="sidebar">
 
-<div class="sidebar-logo">
-  ER123
-</div>
+    <div class="sidebar-logo">
+      ER123
+    </div>
 
-<nav class="sidebar-menu">
+    <nav class="sidebar-menu">
 
-  <button
-    class="sidebar-item active"
-    onclick="showPage('tier', this)"
-  >
-    티어표
-  </button>
+      <button
+        class="sidebar-item active"
+        onclick="showPage('tier', this)"
+      >
+        티어표
+      </button>
 
-  <button
-    class="sidebar-item"
-    onclick="showPage('profile', this)"
-  >
-    프로필
-  </button>
+      <button
+        class="sidebar-item"
+        onclick="showPage('profile', this)"
+      >
+        프로필
+      </button>
 
-  <button
-    class="sidebar-item"
-    onclick="showPage('team', this)"
-  >
-    팀 만들기
-  </button>
+      <button
+        class="sidebar-item"
+        onclick="showPage('team', this)"
+      >
+        팀 만들기
+      </button>
 
-  <button
-    class="sidebar-item"
-    onclick="showPage('teams', this)"
-  >
-    팀 목록
-  </button>
+      <button
+        class="sidebar-item"
+        onclick="showPage('teams', this)"
+      >
+        팀 목록
+      </button>
 
-  <button 
-    class="sidebar-item" 
-    onclick="showPage('history', this)
-    ">
-    내전 기록
-  </button>
-  
-</nav>
+      <button
+        class="sidebar-item"
+        onclick="showPage('history', this)"
+      >
+        내전 기록
+      </button>
+
+    </nav>
 
   </aside>
+
 
   <!-- =========================
        오른쪽 메인 영역
@@ -78,235 +78,252 @@ content="width=device-width, initial-scale=1.0"
   <main class="main-content">
 
 
-<!-- =========================
-     티어표
-========================== -->
-
-<div
-  id="tierPage"
-  class="page active-page"
->
-
-  <div class="container">
-
-    <h1>ER123 티어표</h1>
-
-    <p class="subtitle">
-      사람 이름을 검색해서 티어를 확인하세요.
-    </p>
-
-
-    <!-- 검색 -->
-
-    <div class="search-box">
-
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="검색"
-      >
-
-      <button onclick="searchPerson()">
-        검색
-      </button>
-
-    </div>
-
-
-    <div id="result"></div>
-
-
-    <h2>전체 티어</h2>
-
-    <div id="peopleList"></div>
-
-  </div>
-
-</div>
-
-
-<!-- =========================
-     프로필
-========================== -->
-
-<div
-  id="profilePage"
-  class="page profile-page"
->
-
-  <div class="profile-container">
-
-    <h1>프로필</h1>
-
-    <p class="profile-subtitle">
-      등록된 프로필을 확인하고 수정할 수 있습니다.
-    </p>
-
-
-    <!-- 프로필 목록 -->
+    <!-- =========================
+         티어표
+    ========================== -->
 
     <div
-      id="profileList"
-      class="profile-list"
-    ></div>
+      id="tierPage"
+      class="page active-page"
+    >
 
+      <div class="container">
 
-    <!-- 새 프로필 추가 -->
+        <h1>ER123 티어표</h1>
 
-    <div class="add-profile-box">
-
-      <h2>새 프로필 추가</h2>
-
-      <div class="add-profile-form">
-
-        <input
-          type="text"
-          id="nameInput"
-          placeholder="사람 이름 입력"
-        >
-
-        <select id="tierInput">
-
-          <option value="팀장">
-            팀장
-          </option>
-
-          <option value="팀원">
-            팀원
-          </option>
-
-          <option value="새싹">
-            새싹
-          </option>
-
-        </select>
-
-        <button onclick="addPerson()">
-          프로필 추가
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-    
-<div id="historyPage" class="page">
-  <div class="history-page">
-    <div class="history-container">
-
-      <h1>내전 기록</h1>
-
-      <p class="history-subtitle">
-        지금까지 진행한 내전을 확인할 수 있습니다.
-      </p>
-
-      <!-- 과거 내전 직접 입력 -->
-      <button
-        class="manual-match-button"
-        onclick="openManualMatchInput()"
-      >
-        + 과거 내전 직접 입력
-      </button>
-
-      <div id="historyList" class="history-list">
-        <p class="history-loading">
-          내전 기록을 불러오는 중...
+        <p class="subtitle">
+          사람 이름을 검색해서 티어를 확인하세요.
         </p>
-      </div>
 
-    </div>
-  </div>
-</div>
-    
-<!-- =========================
-     팀 만들기
-========================== -->
+        <!-- 검색 -->
 
-<div id="teamPage" class="page">
+        <div class="search-box">
 
-  <div class="team-page">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="검색"
+          >
 
-    <div class="team-container">
-
-      <h1>팀 만들기</h1>
-
-      <p class="team-subtitle">
-        이번 판에 참가할 사람을 선택하세요.
-      </p>
-
-
-      <!-- 참가자 선택 -->
-
-      <div class="participant-box">
-
-        <div class="participant-header">
-
-          <h2>참가자 선택</h2>
-
-          <span id="participantCount">
-            0명
-          </span>
+          <button onclick="searchPerson()">
+            검색
+          </button>
 
         </div>
 
+        <div id="result"></div>
 
-        <div
-          id="participantList"
-          class="participant-list"
-        ></div>
+        <h2>전체 티어</h2>
+
+        <div id="peopleList"></div>
 
       </div>
 
-
-      <!-- 랜덤 팀 생성 -->
-
-      <button
-        class="random-team-button"
-        onclick="createRandomTeam()"
-      >
-        랜덤 팀 생성
-      </button>
+    </div>
 
 
-      <!-- 생성된 팀 -->
+    <!-- =========================
+         프로필
+    ========================== -->
 
-      <div
-        id="teamResult"
-        class="team-result"
-      ></div>
+    <div
+      id="profilePage"
+      class="page profile-page"
+    >
+
+      <div class="profile-container">
+
+        <h1>프로필</h1>
+
+        <p class="profile-subtitle">
+          등록된 프로필을 확인하고 수정할 수 있습니다.
+        </p>
+
+        <!-- 프로필 목록 -->
+
+        <div
+          id="profileList"
+          class="profile-list"
+        ></div>
+
+
+        <!-- 새 프로필 추가 -->
+
+        <div class="add-profile-box">
+
+          <h2>새 프로필 추가</h2>
+
+          <div class="add-profile-form">
+
+            <input
+              type="text"
+              id="nameInput"
+              placeholder="사람 이름 입력"
+            >
+
+            <select id="tierInput">
+
+              <option value="팀장">
+                팀장
+              </option>
+
+              <option value="팀원">
+                팀원
+              </option>
+
+              <option value="새싹">
+                새싹
+              </option>
+
+            </select>
+
+            <button onclick="addPerson()">
+              프로필 추가
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
 
-  </div>
 
-</div>
+    <!-- =========================
+         내전 기록
+    ========================== -->
+
+    <div id="historyPage" class="page">
+
+      <div class="history-page">
+
+        <div class="history-container">
+
+          <h1>내전 기록</h1>
+
+          <p class="history-subtitle">
+            지금까지 진행한 내전을 확인할 수 있습니다.
+          </p>
 
 
-<!-- =========================
-     팀 목록
-========================== -->
+          <!-- 과거 내전 직접 입력 -->
 
-<div
-  id="teamsPage"
-  class="page"
->
+          <button
+            class="manual-match-button"
+            onclick="openManualMatchInput()"
+          >
+            + 과거 내전 직접 입력
+          </button>
 
-  <div class="placeholder-page">
 
-    <h1>팀 목록</h1>
+          <!-- 내전 기록 -->
 
-    <p>
-      저장된 팀을 보여주는 공간입니다.
-    </p>
+          <div
+            id="historyList"
+            class="history-list"
+          >
 
-  </div>
+            <p class="history-loading">
+              내전 기록을 불러오는 중...
+            </p>
 
-</div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         팀 만들기
+    ========================== -->
+
+    <div id="teamPage" class="page">
+
+      <div class="team-page">
+
+        <div class="team-container">
+
+          <h1>팀 만들기</h1>
+
+          <p class="team-subtitle">
+            이번 판에 참가할 사람을 선택하세요.
+          </p>
+
+
+          <!-- 참가자 선택 -->
+
+          <div class="participant-box">
+
+            <div class="participant-header">
+
+              <h2>참가자 선택</h2>
+
+              <span id="participantCount">
+                0명
+              </span>
+
+            </div>
+
+
+            <div
+              id="participantList"
+              class="participant-list"
+            ></div>
+
+          </div>
+
+
+          <!-- 랜덤 팀 생성 -->
+
+          <button
+            class="random-team-button"
+            onclick="createRandomTeam()"
+          >
+            랜덤 팀 생성
+          </button>
+
+
+          <!-- 생성된 팀 -->
+
+          <div
+            id="teamResult"
+            class="team-result"
+          ></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         팀 목록
+    ========================== -->
+
+    <div
+      id="teamsPage"
+      class="page"
+    >
+
+      <div class="placeholder-page">
+
+        <h1>팀 목록</h1>
+
+        <p>
+          저장된 팀을 보여주는 공간입니다.
+        </p>
+
+      </div>
+
+    </div>
 
   </main>
+
 
   <!-- =========================
        Supabase
@@ -330,11 +347,13 @@ content="width=device-width, initial-scale=1.0"
 
   </script>
 
+
   <!-- =========================
        기존 JavaScript
   ========================== -->
 
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=5"></script>
+
 
   <!-- =========================
        페이지 전환
@@ -393,12 +412,18 @@ content="width=device-width, initial-scale=1.0"
       if (page === "profile") {
 
         loadProfiles();
-      }
-        
-      if (page === "history") {
-        loadMatchHistory();
+
       }
 
+
+      // 내전 기록 페이지를 열었을 때
+      // 내전 기록 불러오기
+
+      if (page === "history") {
+
+        loadMatchHistory();
+
+      }
 
     }
 
