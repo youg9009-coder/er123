@@ -1142,3 +1142,286 @@ h1 {
     padding: 15px;
   }
 }
+
+/* =========================================
+   내전 기록 페이지
+========================================= */
+
+.history-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 50px 40px 80px;
+}
+
+.history-container {
+  width: min(1000px, 100%);
+  margin: 0 auto;
+}
+
+
+/* 제목 */
+
+.history-container h1 {
+  margin: 0;
+  text-align: center;
+  font-size: 38px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1.5px;
+}
+
+.history-subtitle {
+  margin: 14px 0 32px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 15px;
+}
+
+
+/* =========================================
+   과거 내전 직접 입력 버튼
+========================================= */
+
+.manual-match-button {
+  display: block;
+  width: 100%;
+  padding: 15px 20px;
+  margin: 0 auto 30px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.manual-match-button:hover {
+  background: #3b82f6;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+.manual-match-button:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================
+   내전 목록
+========================================= */
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+
+/* 기록이 없을 때 */
+
+.history-loading {
+  margin: 60px 0;
+  text-align: center;
+  color: #64748b;
+  font-size: 15px;
+}
+
+
+/* =========================================
+   내전 카드
+========================================= */
+
+.history-list > div {
+  background: #182338;
+  border: 1px solid #27354d;
+  border-radius: 16px;
+  padding: 22px;
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.18);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.history-list > div:hover {
+  transform: translateY(-2px);
+  border-color: #36537e;
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================
+   내전 카드 내부 제목
+========================================= */
+
+.history-list h2,
+.history-list h3 {
+  color: #ffffff;
+}
+
+.history-list h2 {
+  margin: 0 0 18px;
+  font-size: 21px;
+  font-weight: 900;
+}
+
+.history-list h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+
+/* =========================================
+   팀 영역
+========================================= */
+
+.history-list .team-card,
+.history-list .history-team,
+.history-list .team {
+  background: #202d43;
+  border: 1px solid #30415d;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+
+/* 팀 이름 */
+
+.history-list .team-title,
+.history-list .team-name {
+  color: #f8fafc;
+  font-weight: 800;
+}
+
+
+/* =========================================
+   순위
+========================================= */
+
+.history-list .rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 52px;
+  height: 30px;
+
+  margin-right: 8px;
+
+  border-radius: 8px;
+
+  background: #263a5b;
+  color: #93c5fd;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+
+/* 1위 강조 */
+
+.history-list .rank:first-child {
+  color: #fbbf24;
+}
+
+
+/* =========================================
+   선수 이름
+========================================= */
+
+.history-list .player,
+.history-list .player-name,
+.history-list .member {
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+
+/* =========================================
+   삭제 / 상세 버튼
+========================================= */
+
+.history-list button {
+  border: none;
+  border-radius: 8px;
+
+  padding: 8px 12px;
+
+  background: #26344b;
+  color: #cbd5e1;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.history-list button:hover {
+  background: #33445f;
+  color: #ffffff;
+}
+
+
+/* 삭제 버튼 */
+
+.history-list button[onclick*="delete"],
+.history-list button[onclick*="Delete"] {
+  background: #3a2028;
+  color: #fda4af;
+}
+
+.history-list button[onclick*="delete"]:hover,
+.history-list button[onclick*="Delete"]:hover {
+  background: #7f1d1d;
+  color: #ffffff;
+}
+
+
+/* =========================================
+   모바일
+========================================= */
+
+@media (max-width: 700px) {
+
+  .history-page {
+    padding: 35px 18px 60px;
+  }
+
+  .history-container h1 {
+    font-size: 30px;
+  }
+
+  .history-subtitle {
+    font-size: 14px;
+  }
+
+  .manual-match-button {
+    padding: 14px;
+  }
+
+  .history-list > div {
+    padding: 16px;
+    border-radius: 13px;
+  }
+
+}
