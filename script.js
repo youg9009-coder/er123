@@ -1023,3 +1023,178 @@ teamResult.appendChild(saveButton);
 
 loadPeople();
 loadParticipants();
+
+// ========================================
+// 내전 기록 저장
+// ========================================
+
+async function saveMatchResult() {
+  // 현재 팀이 있는지 확인
+  if (!currentTeams || currentTeams.length === 0) {
+    alert("먼저 랜덤 팀을 생성해주세요.");
+    return;
+  }
+
+  // 각 팀의 순위 가져오기
+  const rankSelects = document.querySelectorAll(".team-rank-select");
+
+  if (rankSelects.length !== currentTeams.length) {
+    alert("팀 순위 정보를 찾을 수 없습니다.");
+    return;
+  }
+
+  const ranks = Array.from(rankSelects).map(function(select) {
+    return Number(select.value);
+  });
+
+  // 순위 중복 확인
+  const uniqueRanks = new Set(ranks);
+
+  if (uniqueRanks.size !== ranks.length) {
+    alert("같은 순위를 가진 팀이 있습니다.");
+    return;
+  }
+
+  // 모든 순위가 제대로 입력되었는지 확인
+  for (let i = 0; i < ranks.length; i++) {
+    if (!ranks[i] || ranks[i] < 1 || ranks[i] > currentTeams.length) {
+      alert("팀 순위를 확인해주세요.");
+      return;
+    }
+  }
+
+  const teamResult = document.getElementById("teamResult");
+
+  if (teamResult) {
+    teamResult.innerHTML +=
+      "<p class='team-loading'>내전 기록을 저장하는 중...</p>";
+  }
+
+  // ========================================
+  // 다음 내전 번호 계산
+  // ========================================
+
+  const { data: existingMatches, error: matchSelectError } =
+    await supabaseClient
+      .from("matches")
+      .select("match_number")
+      .order("match_number", { ascending: false })
+      .limit(1);
+
+  if (matchSelectError) {
+    console.error(matchSelectError);
+    alert("기존 내전 기록을 확인하지 못했습니다.");
+    return;
+  }
+
+  let nextMatchNumber = 1;
+
+  if (existingMatches && existingMatches.length > 0) {
+    nextMatchNumber = Number(existingMatches[0].match_number) + 1;
+  }
+
+  // ========================================
+  // matches 저장
+  // ========================================
+
+  const { data: matchData, error: matchError } =
+    await supabaseClient
+      .from("matches")
+      .insert([
+        {
+          match_number: nextMatchNumber
+        }
+      ])
+      .select()
+      .single();
+
+  if (matchError) {
+    console.error(matchError);
+    alert("내전 기록 저장에 실패했습니다.");
+    return;
+  }
+
+  const matchId = matchData.id;
+
+  // ========================================
+  // 팀 저장
+  // ========================================
+
+  for (let i = 0; i < currentTeams.length; i++) {
+    const team = currentTeams[i];
+
+    const { data: teamData, error: teamError } =
+      await supabaseClient
+        .from("match_teams")
+        .insert([
+          {
+            match_id: matchId,
+            team_number: i + 1,
+            rank: ranks[i]
+          }
+        ])
+        .select()
+        .single();
+
+    if (teamError) {
+      console.error(teamError);
+
+      // 저장 중 문제가 생기면 지금 만든 내전 삭제
+      await supabaseClient
+        .from("matches")
+        .delete()
+        .eq("id", matchId);
+
+      alert("팀 기록 저장에 실패했습니다.");
+      return;
+    }
+
+    const teamId = teamData.id;
+
+    // ========================================
+    // 팀원 저장
+    // ========================================
+
+    const playerRows = team.map(function(person) {
+      return {
+        team_id: teamId,
+        person_id: person.id
+      };
+    });
+
+    const { error: playerError } =
+      await supabaseClient
+        .from("match_players")
+        .insert(playerRows);
+
+    if (playerError) {
+      console.error(playerError);
+
+      // matches 삭제
+      // match_teams와 match_players는 cascade로 같이 삭제됨
+      await supabaseClient
+        .from("matches")
+        .delete()
+        .eq("id", matchId);
+
+      alert("팀원 기록 저장에 실패했습니다.");
+      return;
+    }
+  }
+
+  // ========================================
+  // 저장 완료
+  // ========================================
+
+  alert(nextMatchNumber + "번째 내전 기록이 저장되었습니다.");
+
+  if (teamResult) {
+    teamResult.innerHTML =
+      "<p class='team-success'>" +
+      nextMatchNumber +
+      "번째 내전 기록이 저장되었습니다.</p>";
+  }
+
+  // 현재 팀 초기화
+  currentTeams = [];
+}
