@@ -611,7 +611,7 @@ async function saveProfile(
     const { data: publicData } =
       supabaseClient
         .storage
-        .from("profiles")
+        .from("profile-images")
         .getPublicUrl(filePath);
 
     profileImage =
