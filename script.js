@@ -735,146 +735,361 @@ async function loadProfiles() {
 }
 
 // =========================
-// 랜덤 팀 만들기
+// 참가자 선택
 // =========================
 
-async function createRandomTeam() {
-  const teamResult = document.getElementById("teamResult");
+async function loadParticipants() {
 
-  if (!teamResult) return;
+  const participantList =
+    document.getElementById("participantList");
 
-  teamResult.innerHTML = "<p class='team-loading'>팀을 만드는 중...</p>";
+  const participantCount =
+    document.getElementById("participantCount");
+
+  if (!participantList) {
+    return;
+  }
+
+  participantList.innerHTML =
+    "<p class='team-loading'>사람 목록을 불러오는 중...</p>";
 
   const { data, error } = await supabaseClient
     .from("people")
-    .select("*");
+    .select("*")
+    .order("id", { ascending: true });
 
   if (error) {
+
     console.error(error);
 
-    teamResult.innerHTML =
+    participantList.innerHTML =
       "<p class='team-error'>사람 목록을 불러오지 못했습니다.</p>";
 
     return;
   }
 
+  participantList.innerHTML = "";
+
   if (!data || data.length === 0) {
-    teamResult.innerHTML =
+
+    participantList.innerHTML =
       "<p class='team-error'>등록된 사람이 없습니다.</p>";
 
-    return;
-  }
-
-  const sTier = data.filter(function(person) {
-    return person.tier === "S";
-  });
-
-  const aTier = data.filter(function(person) {
-    return person.tier === "A";
-  });
-
-  const bTier = data.filter(function(person) {
-    return person.tier === "B";
-  });
-
-  // 티어별 인원 확인
-  if (sTier.length === 0) {
-    teamResult.innerHTML =
-      "<p class='team-error'>S 티어 인원이 없습니다.</p>";
-
-    return;
-  }
-
-  if (aTier.length === 0) {
-    teamResult.innerHTML =
-      "<p class='team-error'>A 티어 인원이 없습니다.</p>";
-
-    return;
-  }
-
-  if (bTier.length === 0) {
-    teamResult.innerHTML =
-      "<p class='team-error'>B 티어 인원이 없습니다.</p>";
-
-    return;
-  }
-
-  // 랜덤 선택
-  const sPerson = sTier[Math.floor(Math.random() * sTier.length)];
-  const aPerson = aTier[Math.floor(Math.random() * aTier.length)];
-  const bPerson = bTier[Math.floor(Math.random() * bTier.length)];
-
-  const team = [
-    sPerson,
-    aPerson,
-    bPerson
-  ];
-
-  // 결과 출력
-  teamResult.innerHTML = "";
-
-  const teamTitle = document.createElement("h2");
-  teamTitle.textContent = "랜덤 팀";
-  teamTitle.className = "team-result-title";
-
-  teamResult.appendChild(teamTitle);
-
-  const teamCards = document.createElement("div");
-  teamCards.className = "team-cards";
-
-  team.forEach(function(person) {
-
-    const card = document.createElement("div");
-    card.className = "team-card";
-
-    // 프로필 이미지
-    const image = document.createElement("img");
-
-    if (person.profile_image) {
-      image.src = person.profile_image;
-    } else {
-      image.src =
-        "https://ui-avatars.com/api/?name=" +
-        encodeURIComponent(person.name) +
-        "&background=334155&color=ffffff&size=200";
+    if (participantCount) {
+      participantCount.textContent = "0명";
     }
 
-    image.alt = person.name;
-    image.className = "team-image";
+    return;
+  }
 
-    card.appendChild(image);
+  data.forEach(function(person) {
 
-    // 이름
-    const name = document.createElement("h3");
+    const item =
+      document.createElement("label");
+
+    item.className = "participant-item";
+
+    const checkbox =
+      document.createElement("input");
+
+    checkbox.type = "checkbox";
+    checkbox.className = "participant-checkbox";
+    checkbox.value = person.id;
+
+    const name =
+      document.createElement("span");
+
     name.textContent = person.name;
-    name.className = "team-name";
 
-    card.appendChild(name);
+    item.appendChild(checkbox);
+    item.appendChild(name);
 
-    // 닉네임
-    if (person.nickname) {
-      const nickname = document.createElement("div");
+    participantList.appendChild(item);
 
-      nickname.textContent = "@" + person.nickname;
-      nickname.className = "team-nickname";
-
-      card.appendChild(nickname);
-    }
-
-    // 티어
-    const tier = document.createElement("div");
-
-    tier.textContent = person.tier;
-    tier.className = "team-tier team-tier-" + person.tier;
-
-    card.appendChild(tier);
-
-    teamCards.appendChild(card);
   });
 
-  teamResult.appendChild(teamCards);
+  updateParticipantCount();
+
 }
 
-// 페이지가 열리면 전체 목록 표시
-loadPeople();
 
+// =========================
+// 참가자 수 표시
+// =========================
+
+function updateParticipantCount() {
+
+  const participantCount =
+    document.getElementById("participantCount");
+
+  if (!participantCount) {
+    return;
+  }
+
+  const checked =
+    document.querySelectorAll(
+      ".participant-checkbox:checked"
+    );
+
+  participantCount.textContent =
+    checked.length + "명";
+
+}
+
+
+// =========================
+// 랜덤 팀 만들기
+// =========================
+
+async function createRandomTeam() {
+
+  const teamResult =
+    document.getElementById("teamResult");
+
+  if (!teamResult) {
+    return;
+  }
+
+  const checked =
+    document.querySelectorAll(
+      ".participant-checkbox:checked"
+    );
+
+  if (checked.length === 0) {
+
+    teamResult.innerHTML =
+      "<p class='team-error'>참가자를 먼저 선택해주세요.</p>";
+
+    return;
+  }
+
+  if (checked.length < 3) {
+
+    teamResult.innerHTML =
+      "<p class='team-error'>최소 3명을 선택해주세요.</p>";
+
+    return;
+  }
+
+  if (checked.length % 3 !== 0) {
+
+    teamResult.innerHTML =
+      "<p class='team-error'>참가자는 3명 단위로 선택해주세요.</p>";
+
+    return;
+  }
+
+  teamResult.innerHTML =
+    "<p class='team-loading'>팀을 만드는 중...</p>";
+
+
+  // 선택된 사람 ID
+  const selectedIds =
+    Array.from(checked).map(function(checkbox) {
+      return Number(checkbox.value);
+    });
+
+
+  // 선택된 사람 정보 가져오기
+  const { data, error } =
+    await supabaseClient
+      .from("people")
+      .select("*")
+      .in("id", selectedIds);
+
+
+  if (error) {
+
+    console.error(error);
+
+    teamResult.innerHTML =
+      "<p class='team-error'>참가자 정보를 불러오지 못했습니다.</p>";
+
+    return;
+  }
+
+
+  if (!data || data.length < 3) {
+
+    teamResult.innerHTML =
+      "<p class='team-error'>참가자를 불러오지 못했습니다.</p>";
+
+    return;
+  }
+
+
+  // =========================
+  // 완전 랜덤 섞기
+  // =========================
+
+  const shuffled =
+    [...data];
+
+  for (
+    let i = shuffled.length - 1;
+    i > 0;
+    i--
+  ) {
+
+    const j =
+      Math.floor(Math.random() * (i + 1));
+
+    const temp =
+      shuffled[i];
+
+    shuffled[i] =
+      shuffled[j];
+
+    shuffled[j] =
+      temp;
+  }
+
+
+  // =========================
+  // 3명씩 팀 만들기
+  // =========================
+
+  const teams = [];
+
+  for (
+    let i = 0;
+    i < shuffled.length;
+    i += 3
+  ) {
+
+    teams.push(
+      shuffled.slice(i, i + 3)
+    );
+
+  }
+
+
+  // =========================
+  // 결과 출력
+  // =========================
+
+  teamResult.innerHTML = "";
+
+  const title =
+    document.createElement("h2");
+
+  title.textContent =
+    "랜덤 팀";
+
+  title.className =
+    "team-result-title";
+
+  teamResult.appendChild(title);
+
+
+  teams.forEach(function(team, teamIndex) {
+
+    const teamTitle =
+      document.createElement("h3");
+
+    teamTitle.textContent =
+      "팀 " + (teamIndex + 1);
+
+    teamTitle.style.margin =
+      "30px 0 15px";
+
+    teamTitle.style.fontSize =
+      "22px";
+
+    teamTitle.style.color =
+      "white";
+
+    teamResult.appendChild(teamTitle);
+
+
+    const teamCards =
+      document.createElement("div");
+
+    teamCards.className =
+      "team-cards";
+
+
+    team.forEach(function(person) {
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "team-card";
+
+
+      // 프로필 이미지
+      const image =
+        document.createElement("img");
+
+      if (person.profile_image) {
+
+        image.src =
+          person.profile_image;
+
+      } else {
+
+        image.src =
+          "https://ui-avatars.com/api/?name=" +
+          encodeURIComponent(person.name) +
+          "&background=334155&color=ffffff&size=200";
+
+      }
+
+      image.alt =
+        person.name;
+
+      image.className =
+        "team-image";
+
+      card.appendChild(image);
+
+
+      // 이름
+      const name =
+        document.createElement("h3");
+
+      name.textContent =
+        person.name;
+
+      name.className =
+        "team-name";
+
+      card.appendChild(name);
+
+
+      // 닉네임
+      if (person.nickname) {
+
+        const nickname =
+          document.createElement("div");
+
+        nickname.textContent =
+          "@" + person.nickname;
+
+        nickname.className =
+          "team-nickname";
+
+        card.appendChild(nickname);
+
+      }
+
+
+      teamCards.appendChild(card);
+
+    });
+
+
+    teamResult.appendChild(teamCards);
+
+  });
+
+}
+
+
+// =========================
+// 페이지가 열리면 목록 표시
+// =========================
+
+loadPeople();
+loadParticipants();
