@@ -1,8 +1,10 @@
+```js
 // ========================================
 // ER123 - 메인 스크립트
 // ========================================
 
 let currentTeams = [];
+
 
 // ========================================
 // 전체 사람 목록
@@ -20,6 +22,7 @@ async function loadPeople() {
   }
 
   const peopleList = document.getElementById("peopleList");
+
   if (!peopleList) return;
 
   peopleList.innerHTML = "";
@@ -31,6 +34,7 @@ async function loadPeople() {
     const title = document.createElement("h2");
     title.className = "tier-title tier-title-" + tier;
     title.textContent = "● " + tier + " TIER";
+
     tierSection.appendChild(title);
 
     const grid = document.createElement("div");
@@ -44,6 +48,7 @@ async function loadPeople() {
       const empty = document.createElement("div");
       empty.className = "empty-tier";
       empty.textContent = "아직 사람이 없습니다.";
+
       grid.appendChild(empty);
     } else {
       tierPeople.forEach(function(person) {
@@ -74,6 +79,7 @@ function createPersonCard(person) {
       "&background=334155&color=ffffff&size=160";
 
   image.alt = person.name;
+
   image.style.width = "70px";
   image.style.height = "70px";
   image.style.borderRadius = "50%";
@@ -83,28 +89,34 @@ function createPersonCard(person) {
   card.appendChild(image);
 
   const name = document.createElement("div");
+
   name.className = "person-name";
   name.textContent = person.name;
   name.style.textAlign = "center";
   name.style.width = "100%";
+
   card.appendChild(name);
 
   if (person.nickname) {
     const nickname = document.createElement("div");
+
     nickname.textContent = "@" + person.nickname;
     nickname.style.fontSize = "13px";
     nickname.style.color = "#94a3b8";
     nickname.style.marginTop = "3px";
+
     card.appendChild(nickname);
   }
 
   if (person.description) {
     const description = document.createElement("div");
+
     description.textContent = person.description;
     description.style.fontSize = "12px";
     description.style.color = "#cbd5e1";
     description.style.marginTop = "5px";
     description.style.textAlign = "center";
+
     card.appendChild(description);
   }
 
@@ -136,12 +148,16 @@ async function searchPerson() {
 
   if (error) {
     console.error(error);
+
     result.innerHTML = "오류가 발생했습니다.";
+
     return;
   }
 
   if (!data || data.length === 0) {
-    result.innerHTML = '<div class="no-result">없음</div>';
+    result.innerHTML =
+      '<div class="no-result">없음</div>';
+
     return;
   }
 
@@ -178,17 +194,21 @@ async function addPerson() {
 
   const { error } = await supabaseClient
     .from("people")
-    .insert([{
-      name: name,
-      tier: tier,
-      nickname: "",
-      profile_image: "",
-      description: ""
-    }]);
+    .insert([
+      {
+        name: name,
+        tier: tier,
+        nickname: "",
+        profile_image: "",
+        description: ""
+      }
+    ]);
 
   if (error) {
     console.error(error);
+
     alert("추가에 실패했습니다.");
+
     return;
   }
 
@@ -207,10 +227,15 @@ async function addPerson() {
 // ========================================
 
 function openEditModal(person) {
-  const oldModal = document.getElementById("profileEditModal");
-  if (oldModal) oldModal.remove();
+  const oldModal =
+    document.getElementById("profileEditModal");
+
+  if (oldModal) {
+    oldModal.remove();
+  }
 
   const modal = document.createElement("div");
+
   modal.id = "profileEditModal";
 
   Object.assign(modal.style, {
@@ -238,13 +263,18 @@ function openEditModal(person) {
   });
 
   const title = document.createElement("h2");
+
   title.textContent = "프로필 수정";
   title.style.textAlign = "center";
   title.style.marginTop = "0";
+
   box.appendChild(title);
 
 
+  // ========================================
   // 사진 미리보기
+  // ========================================
+
   const preview = document.createElement("img");
 
   preview.src = person.profile_image
@@ -265,29 +295,42 @@ function openEditModal(person) {
   box.appendChild(preview);
 
 
+  // ========================================
   // 사진 선택
+  // ========================================
+
   const imageInput = document.createElement("input");
+
   imageInput.type = "file";
   imageInput.accept = "image/*";
+
   imageInput.style.display = "block";
   imageInput.style.margin = "0 auto 20px";
+
   box.appendChild(imageInput);
 
   imageInput.onchange = function() {
     const file = imageInput.files[0];
+
     if (file) {
       preview.src = URL.createObjectURL(file);
     }
   };
 
 
+  // ========================================
   // 이름
+  // ========================================
+
   const nameLabel = document.createElement("div");
+
   nameLabel.textContent = "이름";
   nameLabel.style.marginBottom = "5px";
+
   box.appendChild(nameLabel);
 
   const nameInput = document.createElement("input");
+
   nameInput.type = "text";
   nameInput.value = person.name;
 
@@ -304,13 +347,19 @@ function openEditModal(person) {
   box.appendChild(nameInput);
 
 
+  // ========================================
   // 별명
+  // ========================================
+
   const nicknameLabel = document.createElement("div");
+
   nicknameLabel.textContent = "별명";
   nicknameLabel.style.marginBottom = "5px";
+
   box.appendChild(nicknameLabel);
 
   const nicknameInput = document.createElement("input");
+
   nicknameInput.type = "text";
   nicknameInput.value = person.nickname || "";
   nicknameInput.placeholder = "별명을 입력하세요";
@@ -328,13 +377,19 @@ function openEditModal(person) {
   box.appendChild(nicknameInput);
 
 
+  // ========================================
   // 한줄 소개
+  // ========================================
+
   const descriptionLabel = document.createElement("div");
+
   descriptionLabel.textContent = "한줄 소개";
   descriptionLabel.style.marginBottom = "5px";
+
   box.appendChild(descriptionLabel);
 
   const descriptionInput = document.createElement("input");
+
   descriptionInput.type = "text";
   descriptionInput.value = person.description || "";
   descriptionInput.placeholder = "한줄 소개를 입력하세요";
@@ -352,10 +407,15 @@ function openEditModal(person) {
   box.appendChild(descriptionInput);
 
 
+  // ========================================
   // 티어
+  // ========================================
+
   const tierLabel = document.createElement("div");
+
   tierLabel.textContent = "티어";
   tierLabel.style.marginBottom = "5px";
+
   box.appendChild(tierLabel);
 
   const tierSelect = document.createElement("select");
@@ -383,7 +443,10 @@ function openEditModal(person) {
   box.appendChild(tierSelect);
 
 
+  // ========================================
   // 버튼 영역
+  // ========================================
+
   const buttons = document.createElement("div");
 
   Object.assign(buttons.style, {
@@ -394,8 +457,12 @@ function openEditModal(person) {
   });
 
 
+  // ========================================
   // 저장 버튼
+  // ========================================
+
   const saveButton = document.createElement("button");
+
   saveButton.textContent = "저장";
 
   Object.assign(saveButton.style, {
@@ -422,8 +489,38 @@ function openEditModal(person) {
   buttons.appendChild(saveButton);
 
 
+  // ========================================
+  // 사람 삭제 버튼
+  // ========================================
+
+  const deletePersonButton =
+    document.createElement("button");
+
+  deletePersonButton.textContent = "사람 삭제";
+
+  Object.assign(deletePersonButton.style, {
+    background: "#991b1b",
+    color: "white",
+    border: "0",
+    borderRadius: "8px",
+    padding: "10px 18px",
+    cursor: "pointer"
+  });
+
+  deletePersonButton.onclick = function() {
+    deletePerson(person.id, modal);
+  };
+
+  buttons.appendChild(deletePersonButton);
+
+
+  // ========================================
   // 닫기 버튼
-  const closeButton = document.createElement("button");
+  // ========================================
+
+  const closeButton =
+    document.createElement("button");
+
   closeButton.textContent = "닫기";
 
   Object.assign(closeButton.style, {
@@ -440,6 +537,13 @@ function openEditModal(person) {
   };
 
   buttons.appendChild(closeButton);
+
+  box.appendChild(buttons);
+
+  modal.appendChild(box);
+
+  document.body.appendChild(modal);
+}
 
 
 // ========================================
@@ -460,27 +564,39 @@ async function saveProfile(
     return;
   }
 
-  let profileImage = person.profile_image || "";
+  let profileImage =
+    person.profile_image || "";
 
 
+  // ========================================
   // 새 사진 업로드
+  // ========================================
+
   if (imageFile) {
-    const fileExt = imageFile.name.split(".").pop();
+    const fileExt =
+      imageFile.name.split(".").pop();
 
     const fileName =
-      person.id + "_" +
-      Date.now() + "." +
+      person.id +
+      "_" +
+      Date.now() +
+      "." +
       fileExt;
 
-    const filePath = "profiles/" + fileName;
+    const filePath =
+      "profiles/" + fileName;
 
     const { error: uploadError } =
       await supabaseClient
         .storage
         .from("profiles")
-        .upload(filePath, imageFile, {
-          upsert: true
-        });
+        .upload(
+          filePath,
+          imageFile,
+          {
+            upsert: true
+          }
+        );
 
     if (uploadError) {
       console.error(uploadError);
@@ -499,25 +615,32 @@ async function saveProfile(
         .from("profiles")
         .getPublicUrl(filePath);
 
-    profileImage = publicData.publicUrl;
+    profileImage =
+      publicData.publicUrl;
   }
 
 
+  // ========================================
   // DB 수정
-  const { error } = await supabaseClient
-    .from("people")
-    .update({
-      name: name,
-      nickname: nickname,
-      description: description,
-      tier: tier,
-      profile_image: profileImage
-    })
-    .eq("id", person.id);
+  // ========================================
+
+  const { error } =
+    await supabaseClient
+      .from("people")
+      .update({
+        name: name,
+        nickname: nickname,
+        description: description,
+        tier: tier,
+        profile_image: profileImage
+      })
+      .eq("id", person.id);
 
   if (error) {
     console.error(error);
+
     alert("프로필 수정에 실패했습니다.");
+
     return;
   }
 
@@ -537,18 +660,25 @@ async function saveProfile(
 
 async function deletePerson(id, modal) {
   const confirmed =
-    confirm("정말 이 사람을 삭제하시겠습니까?");
+    confirm(
+      "정말 이 사람을 삭제하시겠습니까?"
+    );
 
-  if (!confirmed) return;
+  if (!confirmed) {
+    return;
+  }
 
-  const { error } = await supabaseClient
-    .from("people")
-    .delete()
-    .eq("id", id);
+  const { error } =
+    await supabaseClient
+      .from("people")
+      .delete()
+      .eq("id", id);
 
   if (error) {
     console.error(error);
+
     alert("삭제에 실패했습니다.");
+
     return;
   }
 
@@ -574,80 +704,118 @@ async function loadProfiles() {
 
   profileList.innerHTML = "";
 
-  const { data, error } = await supabaseClient
-    .from("people")
-    .select("*")
-    .order("id", { ascending: true });
+  const { data, error } =
+    await supabaseClient
+      .from("people")
+      .select("*")
+      .order("id", {
+        ascending: true
+      });
 
   if (error) {
     console.error(error);
+
     profileList.innerHTML =
       "<p>프로필을 불러오지 못했습니다.</p>";
+
     return;
   }
 
   if (!data || data.length === 0) {
     profileList.innerHTML =
-      "<p class='profile-empty'>등록된 프로필이 없습니다.</p>";
+      "<p class='profile-empty'>" +
+      "등록된 프로필이 없습니다." +
+      "</p>";
+
     return;
   }
 
   data.forEach(function(person) {
-    const card = document.createElement("div");
+    const card =
+      document.createElement("div");
+
     card.className = "profile-card";
 
 
     // 사진
-    const image = document.createElement("img");
+    const image =
+      document.createElement("img");
 
-    image.src = person.profile_image
-      ? person.profile_image
-      : "https://ui-avatars.com/api/?name=" +
-        encodeURIComponent(person.name) +
-        "&background=334155&color=ffffff&size=200";
+    image.src =
+      person.profile_image
+        ? person.profile_image
+        : "https://ui-avatars.com/api/?name=" +
+          encodeURIComponent(person.name) +
+          "&background=334155&color=ffffff&size=200";
 
     image.alt = person.name;
     image.className = "profile-image";
+
     card.appendChild(image);
 
 
     // 이름
-    const name = document.createElement("h2");
+    const name =
+      document.createElement("h2");
+
     name.textContent = person.name;
     name.className = "profile-name";
+
     card.appendChild(name);
 
 
     // 닉네임
     if (person.nickname) {
-      const nickname = document.createElement("div");
-      nickname.textContent = "@" + person.nickname;
-      nickname.className = "profile-nickname";
+      const nickname =
+        document.createElement("div");
+
+      nickname.textContent =
+        "@" + person.nickname;
+
+      nickname.className =
+        "profile-nickname";
+
       card.appendChild(nickname);
     }
 
 
     // 자기소개
     if (person.description) {
-      const description = document.createElement("p");
-      description.textContent = person.description;
-      description.className = "profile-description";
+      const description =
+        document.createElement("p");
+
+      description.textContent =
+        person.description;
+
+      description.className =
+        "profile-description";
+
       card.appendChild(description);
     }
 
 
     // 티어
-    const tier = document.createElement("div");
+    const tier =
+      document.createElement("div");
+
     tier.textContent = person.tier;
+
     tier.className =
-      "profile-tier tier-" + person.tier;
+      "profile-tier tier-" +
+      person.tier;
+
     card.appendChild(tier);
 
 
     // 수정 버튼
-    const editButton = document.createElement("button");
-    editButton.textContent = "프로필 수정";
-    editButton.className = "profile-edit-button";
+    const editButton =
+      document.createElement("button");
+
+    editButton.textContent =
+      "프로필 수정";
+
+    editButton.className =
+      "profile-edit-button";
 
     editButton.onclick = function() {
       openEditModal(person);
@@ -674,18 +842,25 @@ async function loadParticipants() {
   if (!participantList) return;
 
   participantList.innerHTML =
-    "<p class='team-loading'>사람 목록을 불러오는 중...</p>";
+    "<p class='team-loading'>" +
+    "사람 목록을 불러오는 중..." +
+    "</p>";
 
-  const { data, error } = await supabaseClient
-    .from("people")
-    .select("*")
-    .order("id", { ascending: true });
+  const { data, error } =
+    await supabaseClient
+      .from("people")
+      .select("*")
+      .order("id", {
+        ascending: true
+      });
 
   if (error) {
     console.error(error);
 
     participantList.innerHTML =
-      "<p class='team-error'>사람 목록을 불러오지 못했습니다.</p>";
+      "<p class='team-error'>" +
+      "사람 목록을 불러오지 못했습니다." +
+      "</p>";
 
     return;
   }
@@ -694,33 +869,45 @@ async function loadParticipants() {
 
   if (!data || data.length === 0) {
     participantList.innerHTML =
-      "<p class='team-error'>등록된 사람이 없습니다.</p>";
+      "<p class='team-error'>" +
+      "등록된 사람이 없습니다." +
+      "</p>";
 
     if (participantCount) {
-      participantCount.textContent = "0명";
+      participantCount.textContent =
+        "0명";
     }
 
     return;
   }
 
   data.forEach(function(person) {
-    const item = document.createElement("label");
-    item.className = "participant-item";
+    const item =
+      document.createElement("label");
 
-    const checkbox = document.createElement("input");
+    item.className =
+      "participant-item";
+
+    const checkbox =
+      document.createElement("input");
 
     checkbox.type = "checkbox";
-    checkbox.className = "participant-checkbox";
-    checkbox.value = person.id;
+    checkbox.className =
+      "participant-checkbox";
 
-    // 선택할 때 참가자 수 변경
+    checkbox.value =
+      person.id;
+
     checkbox.addEventListener(
       "change",
       updateParticipantCount
     );
 
-    const name = document.createElement("span");
-    name.textContent = person.name;
+    const name =
+      document.createElement("span");
+
+    name.textContent =
+      person.name;
 
     item.appendChild(checkbox);
     item.appendChild(name);
@@ -738,7 +925,9 @@ async function loadParticipants() {
 
 function updateParticipantCount() {
   const participantCount =
-    document.getElementById("participantCount");
+    document.getElementById(
+      "participantCount"
+    );
 
   if (!participantCount) return;
 
@@ -771,7 +960,10 @@ async function createRandomTeam() {
   // 참가자 없음
   if (checked.length === 0) {
     teamResult.innerHTML =
-      "<p class='team-error'>참가자를 먼저 선택해주세요.</p>";
+      "<p class='team-error'>" +
+      "참가자를 먼저 선택해주세요." +
+      "</p>";
+
     return;
   }
 
@@ -779,31 +971,42 @@ async function createRandomTeam() {
   // 3명 미만
   if (checked.length < 3) {
     teamResult.innerHTML =
-      "<p class='team-error'>최소 3명을 선택해주세요.</p>";
+      "<p class='team-error'>" +
+      "최소 3명을 선택해주세요." +
+      "</p>";
+
     return;
   }
 
 
-  // 3명 단위가 아닌 경우
+  // 3명 단위 확인
   if (checked.length % 3 !== 0) {
     teamResult.innerHTML =
-      "<p class='team-error'>참가자는 3명 단위로 선택해주세요.</p>";
+      "<p class='team-error'>" +
+      "참가자는 3명 단위로 선택해주세요." +
+      "</p>";
+
     return;
   }
 
-
   teamResult.innerHTML =
-    "<p class='team-loading'>팀을 만드는 중...</p>";
+    "<p class='team-loading'>" +
+    "팀을 만드는 중..." +
+    "</p>";
 
 
   // 선택된 사람 ID
   const selectedIds =
-    Array.from(checked).map(function(checkbox) {
-      return Number(checkbox.value);
-    });
+    Array.from(checked).map(
+      function(checkbox) {
+        return Number(
+          checkbox.value
+        );
+      }
+    );
 
 
-  // 선택된 사람 정보 가져오기
+  // 사람 정보 가져오기
   const { data, error } =
     await supabaseClient
       .from("people")
@@ -814,14 +1017,18 @@ async function createRandomTeam() {
     console.error(error);
 
     teamResult.innerHTML =
-      "<p class='team-error'>참가자 정보를 불러오지 못했습니다.</p>";
+      "<p class='team-error'>" +
+      "참가자 정보를 불러오지 못했습니다." +
+      "</p>";
 
     return;
   }
 
   if (!data || data.length < 3) {
     teamResult.innerHTML =
-      "<p class='team-error'>참가자를 불러오지 못했습니다.</p>";
+      "<p class='team-error'>" +
+      "참가자를 불러오지 못했습니다." +
+      "</p>";
 
     return;
   }
@@ -831,7 +1038,8 @@ async function createRandomTeam() {
   // 완전 랜덤 섞기
   // ========================================
 
-  const shuffled = [...data];
+  const shuffled =
+    [...data];
 
   for (
     let i = shuffled.length - 1;
@@ -839,10 +1047,18 @@ async function createRandomTeam() {
     i--
   ) {
     const j =
-      Math.floor(Math.random() * (i + 1));
+      Math.floor(
+        Math.random() * (i + 1)
+      );
 
-    [shuffled[i], shuffled[j]] =
-      [shuffled[j], shuffled[i]];
+    [
+      shuffled[i],
+      shuffled[j]
+    ] =
+    [
+      shuffled[j],
+      shuffled[i]
+    ];
   }
 
 
@@ -861,220 +1077,416 @@ async function createRandomTeam() {
       shuffled.slice(i, i + 3)
     );
   }
-  
-currentTeams = teams;
+
+  currentTeams = teams;
+
 
   // ========================================
-// 결과 출력
-// ========================================
+  // 결과 출력
+  // ========================================
 
-teamResult.innerHTML = "";
+  teamResult.innerHTML = "";
 
-const title = document.createElement("h2");
-title.textContent = "랜덤 팀";
-title.className = "team-result-title";
-teamResult.appendChild(title);
+  const title =
+    document.createElement("h2");
+
+  title.textContent =
+    "랜덤 팀";
+
+  title.className =
+    "team-result-title";
+
+  teamResult.appendChild(title);
 
 
-// 팀 표시
-teams.forEach(function(team, teamIndex) {
-  const teamBox = document.createElement("div");
-  teamBox.className = "team-box";
+  // ========================================
+  // 팀 표시
+  // ========================================
 
-  const teamTitle = document.createElement("h3");
-  teamTitle.textContent = "팀 " + (teamIndex + 1);
-  teamTitle.style.margin = "30px 0 15px";
-  teamTitle.style.fontSize = "22px";
-  teamTitle.style.color = "white";
+  teams.forEach(function(
+    team,
+    teamIndex
+  ) {
+    const teamBox =
+      document.createElement("div");
 
-  teamBox.appendChild(teamTitle);
+    teamBox.className =
+      "team-box";
 
-  const teamCards = document.createElement("div");
-  teamCards.className = "team-cards";
 
-  team.forEach(function(person) {
-    const card = document.createElement("div");
-    card.className = "team-card";
+    const teamTitle =
+      document.createElement("h3");
 
-    const image = document.createElement("img");
+    teamTitle.textContent =
+      "팀 " +
+      (teamIndex + 1);
 
-    image.src = person.profile_image
-      ? person.profile_image
-      : "https://ui-avatars.com/api/?name=" +
-        encodeURIComponent(person.name) +
-        "&background=334155&color=ffffff&size=200";
+    teamTitle.style.margin =
+      "30px 0 15px";
 
-    image.alt = person.name;
-    image.className = "team-image";
+    teamTitle.style.fontSize =
+      "22px";
 
-    card.appendChild(image);
+    teamTitle.style.color =
+      "white";
 
-    const name = document.createElement("h3");
-    name.textContent = person.name;
-    name.className = "team-name";
+    teamBox.appendChild(teamTitle);
 
-    card.appendChild(name);
 
-    if (person.nickname) {
-      const nickname = document.createElement("div");
-      nickname.textContent = "@" + person.nickname;
-      nickname.className = "team-nickname";
-      card.appendChild(nickname);
+    const teamCards =
+      document.createElement("div");
+
+    teamCards.className =
+      "team-cards";
+
+
+    team.forEach(function(person) {
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "team-card";
+
+
+      const image =
+        document.createElement("img");
+
+      image.src =
+        person.profile_image
+          ? person.profile_image
+          : "https://ui-avatars.com/api/?name=" +
+            encodeURIComponent(person.name) +
+            "&background=334155&color=ffffff&size=200";
+
+      image.alt =
+        person.name;
+
+      image.className =
+        "team-image";
+
+      card.appendChild(image);
+
+
+      const name =
+        document.createElement("h3");
+
+      name.textContent =
+        person.name;
+
+      name.className =
+        "team-name";
+
+      card.appendChild(name);
+
+
+      if (person.nickname) {
+        const nickname =
+          document.createElement("div");
+
+        nickname.textContent =
+          "@" + person.nickname;
+
+        nickname.className =
+          "team-nickname";
+
+        card.appendChild(nickname);
+      }
+
+      teamCards.appendChild(card);
+    });
+
+
+    teamBox.appendChild(teamCards);
+
+
+    // ========================================
+    // 순위 선택
+    // ========================================
+
+    const rankBox =
+      document.createElement("div");
+
+    rankBox.className =
+      "team-rank-box";
+
+
+    const rankLabel =
+      document.createElement("span");
+
+    rankLabel.textContent =
+      "순위";
+
+    rankLabel.className =
+      "team-rank-label";
+
+
+    const rankSelect =
+      document.createElement("select");
+
+    rankSelect.className =
+      "team-rank-select";
+
+    rankSelect.dataset.teamIndex =
+      teamIndex;
+
+    rankSelect.dataset.previousValue =
+      String(teamIndex + 1);
+
+
+    // 순위 옵션
+    for (
+      let rank = 1;
+      rank <= teams.length;
+      rank++
+    ) {
+      const option =
+        document.createElement("option");
+
+      option.value =
+        rank;
+
+      option.textContent =
+        rank + "위";
+
+      if (
+        rank ===
+        teamIndex + 1
+      ) {
+        option.selected =
+          true;
+      }
+
+      rankSelect.appendChild(option);
     }
 
-    teamCards.appendChild(card);
+
+    // 중복 순위 방지
+    rankSelect.addEventListener(
+      "change",
+      function() {
+        const selects =
+          document.querySelectorAll(
+            ".team-rank-select"
+          );
+
+        const selectedRanks =
+          Array.from(selects).map(
+            function(select) {
+              return select.value;
+            }
+          );
+
+        const currentValue =
+          rankSelect.value;
+
+        const duplicate =
+          selectedRanks.filter(
+            function(rank) {
+              return rank ===
+                currentValue;
+            }
+          ).length > 1;
+
+        if (duplicate) {
+          alert(
+            "같은 순위는 선택할 수 없습니다."
+          );
+
+          rankSelect.value =
+            rankSelect.dataset.previousValue ||
+            String(teamIndex + 1);
+
+          return;
+        }
+
+        rankSelect.dataset.previousValue =
+          rankSelect.value;
+      }
+    );
+
+
+    rankBox.appendChild(rankLabel);
+    rankBox.appendChild(rankSelect);
+
+    teamBox.appendChild(rankBox);
+
+    teamResult.appendChild(teamBox);
   });
 
-  teamBox.appendChild(teamCards);
 
+  // ========================================
+  // 내전 기록 저장 버튼
+  // ========================================
 
-  // 순위 선택
-  const rankBox = document.createElement("div");
-  rankBox.className = "team-rank-box";
+  const saveButton =
+    document.createElement("button");
 
-  const rankLabel = document.createElement("span");
-  rankLabel.textContent = "순위";
-  rankLabel.className = "team-rank-label";
+  saveButton.textContent =
+    "내전 기록 저장";
 
-  const rankSelect = document.createElement("select");
-  rankSelect.className = "team-rank-select";
-  rankSelect.dataset.teamIndex = teamIndex;
+  saveButton.className =
+    "save-match-button";
 
-  rankSelect.dataset.previousValue = String(teamIndex + 1);
-  
-rankSelect.addEventListener("change", function() {
-  const selects = document.querySelectorAll(".team-rank-select");
+  saveButton.onclick =
+    function() {
+      saveMatchResult();
+    };
 
-  const selectedRanks = [];
-
-  selects.forEach(function(select) {
-    selectedRanks.push(select.value);
-  });
-
-  const duplicates = selectedRanks.filter(function(rank, index) {
-    return selectedRanks.indexOf(rank) !== index;
-  });
-
-  if (duplicates.length > 0) {
-    alert("같은 순위는 선택할 수 없습니다.");
-
-    // 현재 선택을 원래 값으로 되돌림
-    select.value = select.dataset.previousValue || "1";
-    return;
-  }
-
-  select.dataset.previousValue = select.value;
-});
-  
-  for (let rank = 1; rank <= teams.length; rank++) {
-    const option = document.createElement("option");
-
-    option.value = rank;
-    option.textContent = rank + "위";
-
-    rankSelect.appendChild(option);
-  }
-
-  rankBox.appendChild(rankLabel);
-  rankBox.appendChild(rankSelect);
-
-  teamBox.appendChild(rankBox);
-  teamResult.appendChild(teamBox);
-});
-
-
-// 저장 버튼
-const saveButton = document.createElement("button");
-
-saveButton.textContent = "내전 기록 저장";
-saveButton.className = "save-match-button";
-
-saveButton.onclick = function() {
-  saveMatchResult();
-};
-
-teamResult.appendChild(saveButton);
+  teamResult.appendChild(saveButton);
 }
+
 
 // ========================================
 // 내전 기록 저장
 // ========================================
 
 async function saveMatchResult() {
-  // 현재 팀이 있는지 확인
-  if (!currentTeams || currentTeams.length === 0) {
-    alert("먼저 랜덤 팀을 생성해주세요.");
+  if (
+    !currentTeams ||
+    currentTeams.length === 0
+  ) {
+    alert(
+      "먼저 랜덤 팀을 생성해주세요."
+    );
+
     return;
   }
 
-  // 각 팀의 순위 가져오기
-  const rankSelects = document.querySelectorAll(".team-rank-select");
 
-  if (rankSelects.length !== currentTeams.length) {
-    alert("팀 순위 정보를 찾을 수 없습니다.");
+  const rankSelects =
+    document.querySelectorAll(
+      ".team-rank-select"
+    );
+
+  if (
+    rankSelects.length !==
+    currentTeams.length
+  ) {
+    alert(
+      "팀 순위 정보를 찾을 수 없습니다."
+    );
+
     return;
   }
 
-  const ranks = Array.from(rankSelects).map(function(select) {
-    return Number(select.value);
-  });
 
-  // 순위 중복 확인
-  const uniqueRanks = new Set(ranks);
+  const ranks =
+    Array.from(rankSelects).map(
+      function(select) {
+        return Number(select.value);
+      }
+    );
 
-  if (uniqueRanks.size !== ranks.length) {
-    alert("같은 순위를 가진 팀이 있습니다.");
+
+  // 중복 확인
+  const uniqueRanks =
+    new Set(ranks);
+
+  if (
+    uniqueRanks.size !==
+    ranks.length
+  ) {
+    alert(
+      "같은 순위를 가진 팀이 있습니다."
+    );
+
     return;
   }
 
-  // 모든 순위가 제대로 입력되었는지 확인
-  for (let i = 0; i < ranks.length; i++) {
-    if (!ranks[i] || ranks[i] < 1 || ranks[i] > currentTeams.length) {
-      alert("팀 순위를 확인해주세요.");
+
+  // 순위 확인
+  for (
+    let i = 0;
+    i < ranks.length;
+    i++
+  ) {
+    if (
+      !ranks[i] ||
+      ranks[i] < 1 ||
+      ranks[i] > currentTeams.length
+    ) {
+      alert(
+        "팀 순위를 확인해주세요."
+      );
+
       return;
     }
   }
 
-  const teamResult = document.getElementById("teamResult");
+
+  const teamResult =
+    document.getElementById(
+      "teamResult"
+    );
 
   if (teamResult) {
     teamResult.innerHTML +=
-      "<p class='team-loading'>내전 기록을 저장하는 중...</p>";
+      "<p class='team-loading'>" +
+      "내전 기록을 저장하는 중..." +
+      "</p>";
   }
 
+
   // ========================================
-  // 다음 내전 번호 계산
+  // 다음 내전 번호
   // ========================================
 
-  const { data: existingMatches, error: matchSelectError } =
+  const {
+    data: existingMatches,
+    error: matchSelectError
+  } =
     await supabaseClient
       .from("matches")
       .select("match_number")
-      .order("match_number", { ascending: false })
+      .order(
+        "match_number",
+        {
+          ascending: false
+        }
+      )
       .limit(1);
 
   if (matchSelectError) {
-    console.error(matchSelectError);
-    alert("기존 내전 기록을 확인하지 못했습니다.");
+    console.error(
+      matchSelectError
+    );
+
+    alert(
+      "기존 내전 기록을 확인하지 못했습니다."
+    );
+
     return;
   }
 
+
   let nextMatchNumber = 1;
 
-  if (existingMatches && existingMatches.length > 0) {
-    nextMatchNumber = Number(existingMatches[0].match_number) + 1;
+  if (
+    existingMatches &&
+    existingMatches.length > 0
+  ) {
+    nextMatchNumber =
+      Number(
+        existingMatches[0]
+          .match_number
+      ) + 1;
   }
+
 
   // ========================================
   // matches 저장
   // ========================================
 
-  const { data: matchData, error: matchError } =
+  const {
+    data: matchData,
+    error: matchError
+  } =
     await supabaseClient
       .from("matches")
       .insert([
         {
-          match_number: nextMatchNumber
+          match_number:
+            nextMatchNumber
         }
       ])
       .select()
@@ -1082,280 +1494,558 @@ async function saveMatchResult() {
 
   if (matchError) {
     console.error(matchError);
-    alert("내전 기록 저장에 실패했습니다.");
+
+    alert(
+      "내전 기록 저장에 실패했습니다."
+    );
+
     return;
   }
 
-  const matchId = matchData.id;
+
+  const matchId =
+    matchData.id;
+
 
   // ========================================
   // 팀 저장
   // ========================================
 
-  for (let i = 0; i < currentTeams.length; i++) {
-    const team = currentTeams[i];
+  for (
+    let i = 0;
+    i < currentTeams.length;
+    i++
+  ) {
+    const team =
+      currentTeams[i];
 
-    const { data: teamData, error: teamError } =
+
+    const {
+      data: teamData,
+      error: teamError
+    } =
       await supabaseClient
         .from("match_teams")
         .insert([
           {
-            match_id: matchId,
-            team_number: i + 1,
-            rank: ranks[i]
+            match_id:
+              matchId,
+
+            team_number:
+              i + 1,
+
+            rank:
+              ranks[i]
           }
         ])
         .select()
         .single();
 
-    if (teamError) {
-      console.error(teamError);
 
-      // 저장 중 문제가 생기면 지금 만든 내전 삭제
+    if (teamError) {
+      console.error(
+        teamError
+      );
+
+
       await supabaseClient
         .from("matches")
         .delete()
-        .eq("id", matchId);
+        .eq(
+          "id",
+          matchId
+        );
 
-      alert("팀 기록 저장에 실패했습니다.");
+
+      alert(
+        "팀 기록 저장에 실패했습니다."
+      );
+
       return;
     }
 
-    const teamId = teamData.id;
+
+    const teamId =
+      teamData.id;
+
 
     // ========================================
     // 팀원 저장
     // ========================================
 
-    const playerRows = team.map(function(person) {
-      return {
-        team_id: teamId,
-        person_id: person.id
-      };
-    });
+    const playerRows =
+      team.map(function(person) {
+        return {
+          team_id:
+            teamId,
 
-    const { error: playerError } =
+          person_id:
+            person.id
+        };
+      });
+
+
+    const {
+      error: playerError
+    } =
       await supabaseClient
         .from("match_players")
-        .insert(playerRows);
+        .insert(
+          playerRows
+        );
+
 
     if (playerError) {
-      console.error(playerError);
+      console.error(
+        playerError
+      );
 
-      // matches 삭제
-      // match_teams와 match_players는 cascade로 같이 삭제됨
+
       await supabaseClient
         .from("matches")
         .delete()
-        .eq("id", matchId);
+        .eq(
+          "id",
+          matchId
+        );
 
-      alert("팀원 기록 저장에 실패했습니다.");
+
+      alert(
+        "팀원 기록 저장에 실패했습니다."
+      );
+
       return;
     }
   }
+
 
   // ========================================
   // 저장 완료
   // ========================================
 
-  alert(nextMatchNumber + "번째 내전 기록이 저장되었습니다.");
+  alert(
+    nextMatchNumber +
+    "번째 내전 기록이 저장되었습니다."
+  );
+
 
   if (teamResult) {
     teamResult.innerHTML =
       "<p class='team-success'>" +
       nextMatchNumber +
-      "번째 내전 기록이 저장되었습니다.</p>";
+      "번째 내전 기록이 저장되었습니다." +
+      "</p>";
   }
 
-  // 현재 팀 초기화
+
   currentTeams = [];
 }
+
 
 // ========================================
 // 내전 기록 불러오기
 // ========================================
 
 async function loadMatchHistory() {
-  const historyList = document.getElementById("historyList");
+  const historyList =
+    document.getElementById(
+      "historyList"
+    );
 
   if (!historyList) return;
 
   historyList.innerHTML =
-    "<p class='history-loading'>내전 기록을 불러오는 중...</p>";
+    "<p class='history-loading'>" +
+    "내전 기록을 불러오는 중..." +
+    "</p>";
 
-  const { data: matches, error: matchError } =
+
+  const {
+    data: matches,
+    error: matchError
+  } =
     await supabaseClient
       .from("matches")
       .select("*")
-      .order("match_number", { ascending: false });
+      .order(
+        "match_number",
+        {
+          ascending: false
+        }
+      );
+
 
   if (matchError) {
-    console.error(matchError);
+    console.error(
+      matchError
+    );
 
     historyList.innerHTML =
-      "<p class='history-error'>내전 기록을 불러오지 못했습니다.</p>";
+      "<p class='history-error'>" +
+      "내전 기록을 불러오지 못했습니다." +
+      "</p>";
 
     return;
   }
 
-  if (!matches || matches.length === 0) {
+
+  if (
+    !matches ||
+    matches.length === 0
+  ) {
     historyList.innerHTML =
-      "<p class='history-empty'>아직 진행한 내전이 없습니다.</p>";
+      "<p class='history-empty'>" +
+      "아직 진행한 내전이 없습니다." +
+      "</p>";
 
     return;
   }
+
 
   historyList.innerHTML = "";
 
+
   for (const match of matches) {
-    const matchBox = document.createElement("div");
-    matchBox.className = "history-match";
+    const matchBox =
+      document.createElement("div");
 
-    const matchTitle = document.createElement("h2");
+    matchBox.className =
+      "history-match";
+
+
+    const matchTitle =
+      document.createElement("h2");
+
     matchTitle.textContent =
-      "#" + match.match_number + " 내전";
+      "#" +
+      match.match_number +
+      " 내전";
 
-    matchTitle.className = "history-match-title";
+    matchTitle.className =
+      "history-match-title";
 
-    matchBox.appendChild(matchTitle);
+    matchBox.appendChild(
+      matchTitle
+    );
 
-    const { data: teams, error: teamError } =
+
+    const {
+      data: teams,
+      error: teamError
+    } =
       await supabaseClient
         .from("match_teams")
         .select("*")
-        .eq("match_id", match.id)
-        .order("team_number", { ascending: true });
+        .eq(
+          "match_id",
+          match.id
+        )
+        .order(
+          "team_number",
+          {
+            ascending: true
+          }
+        );
+
 
     if (teamError) {
-      console.error(teamError);
+      console.error(
+        teamError
+      );
+
       continue;
     }
 
-    if (!teams || teams.length === 0) {
-      const empty = document.createElement("p");
-      empty.textContent = "팀 기록이 없습니다.";
-      empty.className = "history-empty";
-      matchBox.appendChild(empty);
 
-      historyList.appendChild(matchBox);
+    if (
+      !teams ||
+      teams.length === 0
+    ) {
+      const empty =
+        document.createElement("p");
+
+      empty.textContent =
+        "팀 기록이 없습니다.";
+
+      empty.className =
+        "history-empty";
+
+      matchBox.appendChild(
+        empty
+      );
+
+      historyList.appendChild(
+        matchBox
+      );
+
       continue;
     }
+
 
     for (const team of teams) {
-      const teamBox = document.createElement("div");
-      teamBox.className = "history-team";
+      const teamBox =
+        document.createElement("div");
 
-      const teamHeader = document.createElement("div");
-      teamHeader.className = "history-team-header";
+      teamBox.className =
+        "history-team";
 
-      const teamName = document.createElement("h3");
+
+      const teamHeader =
+        document.createElement("div");
+
+      teamHeader.className =
+        "history-team-header";
+
+
+      const teamName =
+        document.createElement("h3");
+
       teamName.textContent =
-        "팀 " + team.team_number;
+        "팀 " +
+        team.team_number;
 
-      teamHeader.appendChild(teamName);
+      teamHeader.appendChild(
+        teamName
+      );
 
-      const rank = document.createElement("span");
+
+      // ========================================
+      // 순위
+      // 클릭하면 상세 기록
+      // ========================================
+
+      const rank =
+        document.createElement("span");
+
       rank.textContent =
         team.rank + "위";
 
-      rank.className = "history-rank";
-      rank.style.cursor = "pointer";
+      rank.className =
+        "history-rank";
 
-      rank.title = "내전 상세 기록 보기";
+      rank.style.cursor =
+        "pointer";
 
-      rank.addEventListener("click", function() {
-      openMatchDetail(match.id);
-      });
-      teamHeader.appendChild(rank);
+      rank.title =
+        "내전 상세 기록 보기";
 
-      teamBox.appendChild(teamHeader);
 
-      const { data: players, error: playerError } =
+      rank.addEventListener(
+        "click",
+        function() {
+          openMatchDetail(
+            match.id
+          );
+        }
+      );
+
+
+      teamHeader.appendChild(
+        rank
+      );
+
+      teamBox.appendChild(
+        teamHeader
+      );
+
+
+      // ========================================
+      // 팀원
+      // ========================================
+
+      const {
+        data: players,
+        error: playerError
+      } =
         await supabaseClient
           .from("match_players")
           .select("person_id")
-          .eq("team_id", team.id);
+          .eq(
+            "team_id",
+            team.id
+          );
+
 
       if (playerError) {
-        console.error(playerError);
+        console.error(
+          playerError
+        );
+
         continue;
       }
 
-      const playerList = document.createElement("div");
-      playerList.className = "history-players";
 
-      if (players && players.length > 0) {
-        const playerIds = players.map(function(player) {
-          return player.person_id;
-        });
+      const playerList =
+        document.createElement("div");
 
-        const { data: people, error: peopleError } =
+      playerList.className =
+        "history-players";
+
+
+      if (
+        players &&
+        players.length > 0
+      ) {
+        const playerIds =
+          players.map(
+            function(player) {
+              return player.person_id;
+            }
+          );
+
+
+        const {
+          data: people,
+          error: peopleError
+        } =
           await supabaseClient
             .from("people")
             .select("*")
-            .in("id", playerIds);
+            .in(
+              "id",
+              playerIds
+            );
+
 
         if (peopleError) {
-          console.error(peopleError);
+          console.error(
+            peopleError
+          );
         } else if (people) {
-          people.forEach(function(person) {
-            const player = document.createElement("span");
+          people.forEach(
+            function(person) {
+              const player =
+                document.createElement(
+                  "span"
+                );
 
-            player.textContent = person.name;
-            player.className = "history-player";
+              player.textContent =
+                person.name;
 
-            playerList.appendChild(player);
-          });
+              player.className =
+                "history-player";
+
+              playerList.appendChild(
+                player
+              );
+            }
+          );
         }
       }
 
-      teamBox.appendChild(playerList);
-      matchBox.appendChild(teamBox);
+
+      teamBox.appendChild(
+        playerList
+      );
+
+      matchBox.appendChild(
+        teamBox
+      );
     }
 
-    historyList.appendChild(matchBox);
+
+    historyList.appendChild(
+      matchBox
+    );
   }
 }
+
 
 // ========================================
 // 내전 상세 기록
 // ========================================
 
 async function openMatchDetail(matchId) {
-  const { data: match, error: matchError } =
+  // ========================================
+  // 내전 정보
+  // ========================================
+
+  const {
+    data: match,
+    error: matchError
+  } =
     await supabaseClient
       .from("matches")
       .select("*")
-      .eq("id", matchId)
+      .eq(
+        "id",
+        matchId
+      )
       .single();
 
+
   if (matchError) {
-    console.error(matchError);
-    alert("내전 기록을 불러오지 못했습니다.");
+    console.error(
+      matchError
+    );
+
+    alert(
+      "내전 기록을 불러오지 못했습니다."
+    );
+
     return;
   }
 
-  const { data: teams, error: teamError } =
+
+  // ========================================
+  // 팀 정보
+  // ========================================
+
+  const {
+    data: teams,
+    error: teamError
+  } =
     await supabaseClient
       .from("match_teams")
       .select("*")
-      .eq("match_id", matchId)
-      .order("rank", { ascending: true });
+      .eq(
+        "match_id",
+        matchId
+      )
+      .order(
+        "rank",
+        {
+          ascending: true
+        }
+      );
+
 
   if (teamError) {
-    console.error(teamError);
-    alert("팀 기록을 불러오지 못했습니다.");
+    console.error(
+      teamError
+    );
+
+    alert(
+      "팀 기록을 불러오지 못했습니다."
+    );
+
     return;
   }
 
-  const oldModal = document.getElementById("matchDetailModal");
+
+  // ========================================
+  // 기존 모달 제거
+  // ========================================
+
+  const oldModal =
+    document.getElementById(
+      "matchDetailModal"
+    );
 
   if (oldModal) {
     oldModal.remove();
   }
 
-  const modal = document.createElement("div");
-  modal.id = "matchDetailModal";
+
+  // ========================================
+  // 모달
+  // ========================================
+
+  const modal =
+    document.createElement("div");
+
+  modal.id =
+    "matchDetailModal";
 
   Object.assign(modal.style, {
     position: "fixed",
@@ -1372,7 +2062,13 @@ async function openMatchDetail(matchId) {
     boxSizing: "border-box"
   });
 
-  const box = document.createElement("div");
+
+  // ========================================
+  // 내용 박스
+  // ========================================
+
+  const box =
+    document.createElement("div");
 
   Object.assign(box.style, {
     width: "min(700px, 100%)",
@@ -1385,19 +2081,38 @@ async function openMatchDetail(matchId) {
     boxSizing: "border-box"
   });
 
-  const title = document.createElement("h2");
+
+  // ========================================
+  // 제목
+  // ========================================
+
+  const title =
+    document.createElement("h2");
 
   title.textContent =
-    "#" + match.match_number + " 내전 상세";
+    "#" +
+    match.match_number +
+    " 내전 상세";
 
-  title.style.textAlign = "center";
-  title.style.marginTop = "0";
-  title.style.marginBottom = "25px";
+  title.style.textAlign =
+    "center";
+
+  title.style.marginTop =
+    "0";
+
+  title.style.marginBottom =
+    "25px";
 
   box.appendChild(title);
 
+
+  // ========================================
+  // 팀 출력
+  // ========================================
+
   for (const team of teams) {
-    const teamBox = document.createElement("div");
+    const teamBox =
+      document.createElement("div");
 
     Object.assign(teamBox.style, {
       background: "#273449",
@@ -1406,10 +2121,17 @@ async function openMatchDetail(matchId) {
       marginBottom: "12px"
     });
 
-    const teamTitle = document.createElement("div");
+
+    const teamTitle =
+      document.createElement("div");
 
     teamTitle.textContent =
-      "팀 " + team.team_number + "  ·  " + team.rank + "위";
+      "팀 " +
+      team.team_number +
+      "  ·  " +
+      team.rank +
+      "위";
+
 
     Object.assign(teamTitle.style, {
       fontSize: "18px",
@@ -1417,78 +2139,254 @@ async function openMatchDetail(matchId) {
       marginBottom: "12px"
     });
 
-    teamBox.appendChild(teamTitle);
 
-    const { data: players, error: playerError } =
+    teamBox.appendChild(
+      teamTitle
+    );
+
+
+    const {
+      data: players,
+      error: playerError
+    } =
       await supabaseClient
         .from("match_players")
         .select("person_id")
-        .eq("team_id", team.id);
+        .eq(
+          "team_id",
+          team.id
+        );
+
 
     if (playerError) {
-      console.error(playerError);
+      console.error(
+        playerError
+      );
+
       continue;
     }
 
-    if (players && players.length > 0) {
-      const playerIds = players.map(function(player) {
-        return player.person_id;
-      });
 
-      const { data: people, error: peopleError } =
+    if (
+      players &&
+      players.length > 0
+    ) {
+      const playerIds =
+        players.map(
+          function(player) {
+            return player.person_id;
+          }
+        );
+
+
+      const {
+        data: people,
+        error: peopleError
+      } =
         await supabaseClient
           .from("people")
           .select("*")
-          .in("id", playerIds);
+          .in(
+            "id",
+            playerIds
+          );
+
 
       if (peopleError) {
-        console.error(peopleError);
+        console.error(
+          peopleError
+        );
       } else if (people) {
-        people.forEach(function(person) {
-          const player = document.createElement("div");
+        people.forEach(
+          function(person) {
+            const player =
+              document.createElement(
+                "div"
+              );
 
-          player.textContent = person.name;
+            player.textContent =
+              person.name;
 
-          Object.assign(player.style, {
-            padding: "8px 0",
-            color: "#cbd5e1",
-            fontWeight: "700"
-          });
 
-          teamBox.appendChild(player);
-        });
+            Object.assign(player.style, {
+              padding: "8px 0",
+              color: "#cbd5e1",
+              fontWeight: "700"
+            });
+
+
+            teamBox.appendChild(
+              player
+            );
+          }
+        );
       }
     }
 
-    box.appendChild(teamBox);
+
+    box.appendChild(
+      teamBox
+    );
   }
 
-  const closeButton = document.createElement("button");
 
-  closeButton.textContent = "닫기";
+  // ========================================
+  // 내전 삭제 버튼
+  // ========================================
 
-  Object.assign(closeButton.style, {
-    display: "block",
-    margin: "20px auto 0",
-    padding: "10px 25px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#475569",
-    color: "white",
-    fontWeight: "700",
-    cursor: "pointer"
-  });
+  const deleteMatchButton =
+    document.createElement("button");
 
-  closeButton.onclick = function() {
-    modal.remove();
-  };
+  deleteMatchButton.textContent =
+    "이 내전 삭제";
 
-  box.appendChild(closeButton);
+  Object.assign(
+    deleteMatchButton.style,
+    {
+      display: "block",
+      width: "100%",
+      marginTop: "10px",
+      padding: "11px 25px",
+      border: "none",
+      borderRadius: "8px",
+      background: "#991b1b",
+      color: "white",
+      fontWeight: "700",
+      cursor: "pointer"
+    }
+  );
 
-  modal.appendChild(box);
 
-  document.body.appendChild(modal);
+  deleteMatchButton.onclick =
+    async function() {
+      const confirmed =
+        confirm(
+          "#" +
+          match.match_number +
+          " 내전 기록을 정말 삭제하시겠습니까?\n\n" +
+          "이 내전의 팀과 팀원 기록도 함께 삭제됩니다."
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      deleteMatchButton.disabled =
+        true;
+
+      deleteMatchButton.textContent =
+        "삭제 중...";
+
+
+      const {
+        error: deleteError
+      } =
+        await supabaseClient
+          .from("matches")
+          .delete()
+          .eq(
+            "id",
+            match.id
+          );
+
+
+      if (deleteError) {
+        console.error(
+          deleteError
+        );
+
+        alert(
+          "내전 기록 삭제에 실패했습니다."
+        );
+
+
+        deleteMatchButton.disabled =
+          false;
+
+        deleteMatchButton.textContent =
+          "이 내전 삭제";
+
+        return;
+      }
+
+
+      alert(
+        "#" +
+        match.match_number +
+        " 내전 기록이 삭제되었습니다."
+      );
+
+
+      modal.remove();
+
+      loadMatchHistory();
+    };
+
+
+  box.appendChild(
+    deleteMatchButton
+  );
+
+
+  // ========================================
+  // 닫기 버튼
+  // ========================================
+
+  const closeButton =
+    document.createElement("button");
+
+  closeButton.textContent =
+    "닫기";
+
+
+  Object.assign(
+    closeButton.style,
+    {
+      display: "block",
+      width: "100%",
+      margin: "10px auto 0",
+      padding: "10px 25px",
+      border: "none",
+      borderRadius: "8px",
+      background: "#475569",
+      color: "white",
+      fontWeight: "700",
+      cursor: "pointer"
+    }
+  );
+
+
+  closeButton.onclick =
+    function() {
+      modal.remove();
+    };
+
+
+  box.appendChild(
+    closeButton
+  );
+
+
+  // ========================================
+  // 모달 출력
+  // ========================================
+
+  modal.appendChild(
+    box
+  );
+
+  document.body.appendChild(
+    modal
+  );
 }
+
+
+// ========================================
+// 초기 실행
+// ========================================
 
 loadPeople();
 loadParticipants();
+```
