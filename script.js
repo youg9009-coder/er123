@@ -993,10 +993,7 @@ saveButton.onclick = function() {
 };
 
 teamResult.appendChild(saveButton);
-
-// ========================================
-// 초기 실행
-// ========================================
+}
 
 loadPeople();
 loadParticipants();
