@@ -194,7 +194,25 @@ content="width=device-width, initial-scale=1.0"
   </div>
 
 </div>
+    
+<div id="historyPage" class="page">
+  <div class="history-page">
+    <div class="history-container">
 
+      <h1>내전 기록</h1>
+
+      <p class="history-subtitle">
+        지금까지 진행한 내전을 확인할 수 있습니다.
+      </p>
+
+      <div id="historyList" class="history-list">
+        <p class="history-loading">내전 기록을 불러오는 중...</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+    
 <!-- =========================
      팀 만들기
 ========================== -->
@@ -368,8 +386,12 @@ content="width=device-width, initial-scale=1.0"
       if (page === "profile") {
 
         loadProfiles();
-
       }
+        
+      if (page === "history") {
+        loadMatchHistory();
+      }
+
 
     }
 
