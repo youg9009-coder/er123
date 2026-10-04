@@ -889,3 +889,143 @@ h1 {
     width: 100%;
   }
 }
+/* =========================
+   팀 만들기
+========================= */
+
+.team-page {
+  min-height: 100vh;
+  padding: 60px 40px 100px;
+}
+
+.team-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.team-container h1 {
+  margin: 0 0 10px;
+  font-size: 42px;
+}
+
+.team-subtitle {
+  margin: 0 0 35px;
+  color: #94a3b8;
+}
+
+.random-team-button {
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  padding: 14px 30px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.random-team-button:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.team-result {
+  margin-top: 50px;
+}
+
+.team-result-title {
+  margin: 0 0 25px;
+  font-size: 28px;
+}
+
+.team-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.team-card {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.team-card:hover {
+  transform: translateY(-4px);
+  background: #243247;
+}
+
+.team-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 18px;
+}
+
+.team-name {
+  margin: 0;
+  font-size: 24px;
+}
+
+.team-nickname {
+  margin-top: 6px;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.team-tier {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 50px;
+  height: 40px;
+
+  margin-top: 18px;
+
+  border-radius: 9px;
+
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.team-tier-S {
+  background: #ef4444;
+  color: white;
+}
+
+.team-tier-A {
+  background: #f97316;
+  color: white;
+}
+
+.team-tier-B {
+  background: #eab308;
+  color: white;
+}
+
+.team-loading {
+  color: #94a3b8;
+}
+
+.team-error {
+  color: #f87171;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .team-page {
+    padding: 40px 20px 80px;
+  }
+
+  .team-cards {
+    grid-template-columns: 1fr;
+  }
+}
