@@ -1284,7 +1284,13 @@ async function loadMatchHistory() {
         team.rank + "위";
 
       rank.className = "history-rank";
+      rank.style.cursor = "pointer";
 
+      rank.title = "내전 상세 기록 보기";
+
+      rank.addEventListener("click", function() {
+      openMatchDetail(match.id);
+      });
       teamHeader.appendChild(rank);
 
       teamBox.appendChild(teamHeader);
@@ -1334,6 +1340,179 @@ async function loadMatchHistory() {
 
     historyList.appendChild(matchBox);
   }
+}
+
+// ========================================
+// 내전 상세 기록
+// ========================================
+
+async function openMatchDetail(matchId) {
+  const { data: match, error: matchError } =
+    await supabaseClient
+      .from("matches")
+      .select("*")
+      .eq("id", matchId)
+      .single();
+
+  if (matchError) {
+    console.error(matchError);
+    alert("내전 기록을 불러오지 못했습니다.");
+    return;
+  }
+
+  const { data: teams, error: teamError } =
+    await supabaseClient
+      .from("match_teams")
+      .select("*")
+      .eq("match_id", matchId)
+      .order("rank", { ascending: true });
+
+  if (teamError) {
+    console.error(teamError);
+    alert("팀 기록을 불러오지 못했습니다.");
+    return;
+  }
+
+  const oldModal = document.getElementById("matchDetailModal");
+
+  if (oldModal) {
+    oldModal.remove();
+  }
+
+  const modal = document.createElement("div");
+  modal.id = "matchDetailModal";
+
+  Object.assign(modal.style, {
+    position: "fixed",
+    left: "0",
+    top: "0",
+    width: "100%",
+    height: "100%",
+    background: "rgba(0,0,0,0.75)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: "9999",
+    padding: "20px",
+    boxSizing: "border-box"
+  });
+
+  const box = document.createElement("div");
+
+  Object.assign(box.style, {
+    width: "min(700px, 100%)",
+    maxHeight: "90vh",
+    overflowY: "auto",
+    background: "#1e293b",
+    borderRadius: "18px",
+    padding: "30px",
+    color: "white",
+    boxSizing: "border-box"
+  });
+
+  const title = document.createElement("h2");
+
+  title.textContent =
+    "#" + match.match_number + " 내전 상세";
+
+  title.style.textAlign = "center";
+  title.style.marginTop = "0";
+  title.style.marginBottom = "25px";
+
+  box.appendChild(title);
+
+  for (const team of teams) {
+    const teamBox = document.createElement("div");
+
+    Object.assign(teamBox.style, {
+      background: "#273449",
+      borderRadius: "12px",
+      padding: "18px",
+      marginBottom: "12px"
+    });
+
+    const teamTitle = document.createElement("div");
+
+    teamTitle.textContent =
+      "팀 " + team.team_number + "  ·  " + team.rank + "위";
+
+    Object.assign(teamTitle.style, {
+      fontSize: "18px",
+      fontWeight: "900",
+      marginBottom: "12px"
+    });
+
+    teamBox.appendChild(teamTitle);
+
+    const { data: players, error: playerError } =
+      await supabaseClient
+        .from("match_players")
+        .select("person_id")
+        .eq("team_id", team.id);
+
+    if (playerError) {
+      console.error(playerError);
+      continue;
+    }
+
+    if (players && players.length > 0) {
+      const playerIds = players.map(function(player) {
+        return player.person_id;
+      });
+
+      const { data: people, error: peopleError } =
+        await supabaseClient
+          .from("people")
+          .select("*")
+          .in("id", playerIds);
+
+      if (peopleError) {
+        console.error(peopleError);
+      } else if (people) {
+        people.forEach(function(person) {
+          const player = document.createElement("div");
+
+          player.textContent = person.name;
+
+          Object.assign(player.style, {
+            padding: "8px 0",
+            color: "#cbd5e1",
+            fontWeight: "700"
+          });
+
+          teamBox.appendChild(player);
+        });
+      }
+    }
+
+    box.appendChild(teamBox);
+  }
+
+  const closeButton = document.createElement("button");
+
+  closeButton.textContent = "닫기";
+
+  Object.assign(closeButton.style, {
+    display: "block",
+    margin: "20px auto 0",
+    padding: "10px 25px",
+    border: "none",
+    borderRadius: "8px",
+    background: "#475569",
+    color: "white",
+    fontWeight: "700",
+    cursor: "pointer"
+  });
+
+  closeButton.onclick = function() {
+    modal.remove();
+  };
+
+  box.appendChild(closeButton);
+
+  modal.appendChild(box);
+
+  document.body.appendChild(modal);
 }
 
 loadPeople();
