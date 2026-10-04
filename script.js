@@ -442,30 +442,95 @@ function openEditModal(person) {
   buttons.appendChild(closeButton);
 
 
-  // 삭제 버튼
-  const deleteButton = document.createElement("button");
-  deleteButton.textContent = "삭제";
+// ========================================
+// 삭제 버튼
+// ========================================
 
-  Object.assign(deleteButton.style, {
-    background: "#991b1b",
-    color: "white",
-    border: "0",
-    borderRadius: "8px",
-    padding: "10px 18px",
-    cursor: "pointer"
-  });
+const deleteButton = document.createElement("button");
 
-  deleteButton.onclick = function() {
-    deletePerson(person.id, modal);
-  };
+deleteButton.textContent = "이 내전 삭제";
 
-  buttons.appendChild(deleteButton);
+Object.assign(deleteButton.style, {
+  display: "block",
+  width: "100%",
+  marginTop: "10px",
+  padding: "10px 25px",
+  border: "none",
+  borderRadius: "8px",
+  background: "#991b1b",
+  color: "white",
+  fontWeight: "700",
+  cursor: "pointer"
+});
 
-  box.appendChild(buttons);
-  modal.appendChild(box);
-  document.body.appendChild(modal);
-}
+deleteButton.onclick = async function() {
+  const confirmed = confirm(
+    "#" + match.match_number + " 내전 기록을 정말 삭제하시겠습니까?\n\n" +
+    "이 내전의 팀과 팀원 기록도 함께 삭제됩니다."
+  );
 
+  if (!confirmed) {
+    return;
+  }
+
+  deleteButton.disabled = true;
+  deleteButton.textContent = "삭제 중...";
+
+  const { error } = await supabaseClient
+    .from("matches")
+    .delete()
+    .eq("id", match.id);
+
+  if (error) {
+    console.error(error);
+
+    alert("내전 기록 삭제에 실패했습니다.");
+
+    deleteButton.disabled = false;
+    deleteButton.textContent = "이 내전 삭제";
+
+    return;
+  }
+
+  alert("#" + match.match_number + " 내전 기록이 삭제되었습니다.");
+
+  modal.remove();
+
+  loadMatchHistory();
+};
+
+
+// ========================================
+// 닫기 버튼
+// ========================================
+
+const closeButton = document.createElement("button");
+
+closeButton.textContent = "닫기";
+
+Object.assign(closeButton.style, {
+  display: "block",
+  width: "100%",
+  margin: "20px auto 0",
+  padding: "10px 25px",
+  border: "none",
+  borderRadius: "8px",
+  background: "#475569",
+  color: "white",
+  fontWeight: "700",
+  cursor: "pointer"
+});
+
+closeButton.onclick = function() {
+  modal.remove();
+};
+
+box.appendChild(deleteButton);
+box.appendChild(closeButton);
+
+modal.appendChild(box);
+
+document.body.appendChild(modal);
 
 // ========================================
 // 프로필 저장
