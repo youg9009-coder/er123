@@ -1021,9 +1021,6 @@ saveButton.onclick = function() {
 teamResult.appendChild(saveButton);
 }
 
-loadPeople();
-loadParticipants();
-
 // ========================================
 // 내전 기록 저장
 // ========================================
@@ -1198,3 +1195,146 @@ async function saveMatchResult() {
   // 현재 팀 초기화
   currentTeams = [];
 }
+
+// ========================================
+// 내전 기록 불러오기
+// ========================================
+
+async function loadMatchHistory() {
+  const historyList = document.getElementById("historyList");
+
+  if (!historyList) return;
+
+  historyList.innerHTML =
+    "<p class='history-loading'>내전 기록을 불러오는 중...</p>";
+
+  const { data: matches, error: matchError } =
+    await supabaseClient
+      .from("matches")
+      .select("*")
+      .order("match_number", { ascending: false });
+
+  if (matchError) {
+    console.error(matchError);
+
+    historyList.innerHTML =
+      "<p class='history-error'>내전 기록을 불러오지 못했습니다.</p>";
+
+    return;
+  }
+
+  if (!matches || matches.length === 0) {
+    historyList.innerHTML =
+      "<p class='history-empty'>아직 진행한 내전이 없습니다.</p>";
+
+    return;
+  }
+
+  historyList.innerHTML = "";
+
+  for (const match of matches) {
+    const matchBox = document.createElement("div");
+    matchBox.className = "history-match";
+
+    const matchTitle = document.createElement("h2");
+    matchTitle.textContent =
+      "#" + match.match_number + " 내전";
+
+    matchTitle.className = "history-match-title";
+
+    matchBox.appendChild(matchTitle);
+
+    const { data: teams, error: teamError } =
+      await supabaseClient
+        .from("match_teams")
+        .select("*")
+        .eq("match_id", match.id)
+        .order("team_number", { ascending: true });
+
+    if (teamError) {
+      console.error(teamError);
+      continue;
+    }
+
+    if (!teams || teams.length === 0) {
+      const empty = document.createElement("p");
+      empty.textContent = "팀 기록이 없습니다.";
+      empty.className = "history-empty";
+      matchBox.appendChild(empty);
+
+      historyList.appendChild(matchBox);
+      continue;
+    }
+
+    for (const team of teams) {
+      const teamBox = document.createElement("div");
+      teamBox.className = "history-team";
+
+      const teamHeader = document.createElement("div");
+      teamHeader.className = "history-team-header";
+
+      const teamName = document.createElement("h3");
+      teamName.textContent =
+        "팀 " + team.team_number;
+
+      teamHeader.appendChild(teamName);
+
+      const rank = document.createElement("span");
+      rank.textContent =
+        team.rank + "위";
+
+      rank.className = "history-rank";
+
+      teamHeader.appendChild(rank);
+
+      teamBox.appendChild(teamHeader);
+
+      const { data: players, error: playerError } =
+        await supabaseClient
+          .from("match_players")
+          .select("person_id")
+          .eq("team_id", team.id);
+
+      if (playerError) {
+        console.error(playerError);
+        continue;
+      }
+
+      const playerList = document.createElement("div");
+      playerList.className = "history-players";
+
+      if (players && players.length > 0) {
+        const playerIds = players.map(function(player) {
+          return player.person_id;
+        });
+
+        const { data: people, error: peopleError } =
+          await supabaseClient
+            .from("people")
+            .select("*")
+            .in("id", playerIds);
+
+        if (peopleError) {
+          console.error(peopleError);
+        } else if (people) {
+          people.forEach(function(person) {
+            const player = document.createElement("span");
+
+            player.textContent = person.name;
+            player.className = "history-player";
+
+            playerList.appendChild(player);
+          });
+        }
+      }
+
+      teamBox.appendChild(playerList);
+      matchBox.appendChild(teamBox);
+    }
+
+    historyList.appendChild(matchBox);
+  }
+}
+
+loadPeople();
+loadParticipants();
