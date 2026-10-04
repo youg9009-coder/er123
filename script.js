@@ -194,11 +194,12 @@ async function addPerson() {
     return;
   }
 
-  alert("사람이 추가되었습니다.");
+alert("사람이 추가되었습니다.");
 
-  nameInput.value = "";
+nameInput.value = "";
 
-  loadPeople();
+loadPeople();
+loadProfiles();
 }
 
 
