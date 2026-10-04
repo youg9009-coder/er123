@@ -695,6 +695,10 @@ async function deletePerson(id, modal) {
 // 프로필 목록
 // ========================================
 
+// ========================================
+// 프로필 목록
+// ========================================
+
 async function loadProfiles() {
   const profileList =
     document.getElementById("profileList");
@@ -735,8 +739,24 @@ async function loadProfiles() {
 
     card.className = "profile-card";
 
+    // ========================================
+    // 카드 클릭 → 개인 전적
+    // ========================================
 
+    card.style.cursor = "pointer";
+
+    card.addEventListener(
+      "click",
+      function() {
+        openPlayerRecord(person);
+      }
+    );
+
+
+    // ========================================
     // 사진
+    // ========================================
+
     const image =
       document.createElement("img");
 
@@ -753,7 +773,10 @@ async function loadProfiles() {
     card.appendChild(image);
 
 
+    // ========================================
     // 이름
+    // ========================================
+
     const name =
       document.createElement("h2");
 
@@ -763,7 +786,10 @@ async function loadProfiles() {
     card.appendChild(name);
 
 
+    // ========================================
     // 닉네임
+    // ========================================
+
     if (person.nickname) {
       const nickname =
         document.createElement("div");
@@ -778,7 +804,10 @@ async function loadProfiles() {
     }
 
 
+    // ========================================
     // 자기소개
+    // ========================================
+
     if (person.description) {
       const description =
         document.createElement("p");
@@ -793,7 +822,10 @@ async function loadProfiles() {
     }
 
 
+    // ========================================
     // 티어
+    // ========================================
+
     const tier =
       document.createElement("div");
 
@@ -806,7 +838,29 @@ async function loadProfiles() {
     card.appendChild(tier);
 
 
+    // ========================================
+    // 전적 보기 안내
+    // ========================================
+
+    const recordHint =
+      document.createElement("div");
+
+    recordHint.textContent =
+      "클릭하여 개인 전적 보기";
+
+    Object.assign(recordHint.style, {
+      marginTop: "10px",
+      fontSize: "12px",
+      color: "#94a3b8"
+    });
+
+    card.appendChild(recordHint);
+
+
+    // ========================================
     // 수정 버튼
+    // ========================================
+
     const editButton =
       document.createElement("button");
 
@@ -816,7 +870,11 @@ async function loadProfiles() {
     editButton.className =
       "profile-edit-button";
 
-    editButton.onclick = function() {
+    editButton.onclick = function(event) {
+
+      // 카드 클릭 이벤트 방지
+      event.stopPropagation();
+
       openEditModal(person);
     };
 
@@ -826,6 +884,620 @@ async function loadProfiles() {
   });
 }
 
+
+// ========================================
+// 개인 전적
+// ========================================
+
+async function openPlayerRecord(person) {
+
+  // ========================================
+  // 기존 모달 제거
+  // ========================================
+
+  const oldModal =
+    document.getElementById(
+      "playerRecordModal"
+    );
+
+  if (oldModal) {
+    oldModal.remove();
+  }
+
+
+  // ========================================
+  // 로딩 모달
+  // ========================================
+
+  const modal =
+    document.createElement("div");
+
+  modal.id =
+    "playerRecordModal";
+
+  Object.assign(modal.style, {
+    position: "fixed",
+    left: "0",
+    top: "0",
+    width: "100%",
+    height: "100%",
+    background: "rgba(0,0,0,0.75)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: "9999",
+    padding: "20px",
+    boxSizing: "border-box"
+  });
+
+
+  const box =
+    document.createElement("div");
+
+  Object.assign(box.style, {
+    width: "min(650px, 100%)",
+    maxHeight: "90vh",
+    overflowY: "auto",
+    background: "#1e293b",
+    borderRadius: "18px",
+    padding: "30px",
+    color: "white",
+    boxSizing: "border-box"
+  });
+
+
+  const loading =
+    document.createElement("p");
+
+  loading.textContent =
+    "개인 전적을 불러오는 중...";
+
+  loading.style.textAlign =
+    "center";
+
+  box.appendChild(loading);
+
+  modal.appendChild(box);
+
+  document.body.appendChild(modal);
+
+
+  // ========================================
+  // 개인이 참가한 팀 기록 가져오기
+  // ========================================
+
+  const {
+    data: playerRows,
+    error: playerError
+  } =
+    await supabaseClient
+      .from("match_players")
+      .select("team_id")
+      .eq(
+        "person_id",
+        person.id
+      );
+
+
+  if (playerError) {
+    console.error(playerError);
+
+    loading.textContent =
+      "개인 전적을 불러오지 못했습니다.";
+
+    return;
+  }
+
+
+  const teamIds =
+    (playerRows || []).map(
+      function(row) {
+        return row.team_id;
+      }
+    );
+
+
+  // ========================================
+  // 참가 기록이 없는 경우
+  // ========================================
+
+  if (teamIds.length === 0) {
+    renderPlayerRecord(
+      box,
+      person,
+      []
+    );
+
+    return;
+  }
+
+
+  // ========================================
+  // 팀 기록 가져오기
+  // ========================================
+
+  const {
+    data: teams,
+    error: teamError
+  } =
+    await supabaseClient
+      .from("match_teams")
+      .select(
+        "id, match_id, team_number, rank"
+      )
+      .in(
+        "id",
+        teamIds
+      );
+
+
+  if (teamError) {
+    console.error(teamError);
+
+    loading.textContent =
+      "팀 전적을 불러오지 못했습니다.";
+
+    return;
+  }
+
+
+  if (!teams || teams.length === 0) {
+    renderPlayerRecord(
+      box,
+      person,
+      []
+    );
+
+    return;
+  }
+
+
+  // ========================================
+  // 내전 번호 가져오기
+  // ========================================
+
+  const matchIds =
+    teams.map(
+      function(team) {
+        return team.match_id;
+      }
+    );
+
+
+  const {
+    data: matches,
+    error: matchError
+  } =
+    await supabaseClient
+      .from("matches")
+      .select(
+        "id, match_number"
+      )
+      .in(
+        "id",
+        matchIds
+      );
+
+
+  if (matchError) {
+    console.error(matchError);
+
+    loading.textContent =
+      "내전 정보를 불러오지 못했습니다.";
+
+    return;
+  }
+
+
+  // ========================================
+  // 개인 전적 데이터 조합
+  // ========================================
+
+  const records =
+    teams.map(function(team) {
+
+      const match =
+        (matches || []).find(
+          function(item) {
+            return item.id ===
+              team.match_id;
+          }
+        );
+
+      return {
+        matchId:
+          team.match_id,
+
+        matchNumber:
+          match
+            ? match.match_number
+            : "-",
+
+        teamNumber:
+          team.team_number,
+
+        rank:
+          team.rank
+      };
+    });
+
+
+  // 최신 내전부터
+  records.sort(
+    function(a, b) {
+      return Number(b.matchNumber) -
+        Number(a.matchNumber);
+    }
+  );
+
+
+  renderPlayerRecord(
+    box,
+    person,
+    records
+  );
+}
+
+
+// ========================================
+// 개인 전적 화면 출력
+// ========================================
+
+function renderPlayerRecord(
+  box,
+  person,
+  records
+) {
+
+  box.innerHTML = "";
+
+
+  // ========================================
+  // 프로필
+  // ========================================
+
+  const image =
+    document.createElement("img");
+
+  image.src =
+    person.profile_image
+      ? person.profile_image
+      : "https://ui-avatars.com/api/?name=" +
+        encodeURIComponent(person.name) +
+        "&background=334155&color=ffffff&size=200";
+
+  Object.assign(image.style, {
+    display: "block",
+    width: "100px",
+    height: "100px",
+    borderRadius: "50%",
+    objectFit: "cover",
+    margin: "0 auto 15px"
+  });
+
+  box.appendChild(image);
+
+
+  const name =
+    document.createElement("h2");
+
+  name.textContent =
+    person.name;
+
+  name.style.textAlign =
+    "center";
+
+  name.style.margin =
+    "0 0 5px";
+
+  box.appendChild(name);
+
+
+  if (person.nickname) {
+
+    const nickname =
+      document.createElement("div");
+
+    nickname.textContent =
+      "@" + person.nickname;
+
+    nickname.style.textAlign =
+      "center";
+
+    nickname.style.color =
+      "#94a3b8";
+
+    nickname.style.marginBottom =
+      "10px";
+
+    box.appendChild(nickname);
+  }
+
+
+  const tier =
+    document.createElement("div");
+
+  tier.textContent =
+    person.tier + " TIER";
+
+  Object.assign(tier.style, {
+    textAlign: "center",
+    fontWeight: "900",
+    marginBottom: "25px"
+  });
+
+  box.appendChild(tier);
+
+
+  // ========================================
+  // 통계 계산
+  // ========================================
+
+  const total =
+    records.length;
+
+  const first =
+    records.filter(
+      function(record) {
+        return record.rank === 1;
+      }
+    ).length;
+
+  const second =
+    records.filter(
+      function(record) {
+        return record.rank === 2;
+      }
+    ).length;
+
+  const third =
+    records.filter(
+      function(record) {
+        return record.rank === 3;
+      }
+    ).length;
+
+
+  // ========================================
+  // 통계 카드
+  // ========================================
+
+  const stats =
+    document.createElement("div");
+
+  Object.assign(stats.style, {
+    display: "grid",
+    gridTemplateColumns:
+      "repeat(4, 1fr)",
+    gap: "10px",
+    marginBottom: "25px"
+  });
+
+
+  const statData = [
+    ["총 경기", total],
+    ["🥇 1위", first],
+    ["🥈 2위", second],
+    ["🥉 3위", third]
+  ];
+
+
+  statData.forEach(
+    function(item) {
+
+      const stat =
+        document.createElement("div");
+
+      Object.assign(stat.style, {
+        background: "#273449",
+        borderRadius: "12px",
+        padding: "15px 8px",
+        textAlign: "center"
+      });
+
+
+      const label =
+        document.createElement("div");
+
+      label.textContent =
+        item[0];
+
+      label.style.fontSize =
+        "13px";
+
+      label.style.color =
+        "#94a3b8";
+
+      label.style.marginBottom =
+        "7px";
+
+
+      const value =
+        document.createElement("div");
+
+      value.textContent =
+        item[1];
+
+      value.style.fontSize =
+        "22px";
+
+      value.style.fontWeight =
+        "900";
+
+
+      stat.appendChild(label);
+      stat.appendChild(value);
+
+      stats.appendChild(stat);
+    }
+  );
+
+
+  box.appendChild(stats);
+
+
+  // ========================================
+  // 순위 비율
+  // ========================================
+
+  if (total > 0) {
+
+    const percentage =
+      document.createElement("div");
+
+    percentage.textContent =
+      "1위 " +
+      Math.round(first / total * 100) +
+      "%  ·  " +
+      "2위 " +
+      Math.round(second / total * 100) +
+      "%  ·  " +
+      "3위 " +
+      Math.round(third / total * 100) +
+      "%";
+
+    Object.assign(percentage.style, {
+      textAlign: "center",
+      color: "#cbd5e1",
+      marginBottom: "25px"
+    });
+
+    box.appendChild(percentage);
+  }
+
+
+  // ========================================
+  // 경기 기록 제목
+  // ========================================
+
+  const historyTitle =
+    document.createElement("h3");
+
+  historyTitle.textContent =
+    "최근 내전 기록";
+
+  historyTitle.style.margin =
+    "0 0 12px";
+
+  box.appendChild(historyTitle);
+
+
+  // ========================================
+  // 경기 기록
+  // ========================================
+
+  if (records.length === 0) {
+
+    const empty =
+      document.createElement("p");
+
+    empty.textContent =
+      "아직 참여한 내전이 없습니다.";
+
+    empty.style.textAlign =
+      "center";
+
+    empty.style.color =
+      "#94a3b8";
+
+    box.appendChild(empty);
+
+  } else {
+
+    records.forEach(
+      function(record) {
+
+        const row =
+          document.createElement("div");
+
+        Object.assign(row.style, {
+          background: "#273449",
+          borderRadius: "10px",
+          padding: "12px 15px",
+          marginBottom: "8px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center"
+        });
+
+
+        const matchInfo =
+          document.createElement("div");
+
+        matchInfo.textContent =
+          "#" +
+          record.matchNumber +
+          " 내전  ·  팀 " +
+          record.teamNumber;
+
+        matchInfo.style.fontWeight =
+          "700";
+
+
+        const rank =
+          document.createElement("strong");
+
+        if (record.rank === 1) {
+          rank.textContent = "🥇 1위";
+        } else if (record.rank === 2) {
+          rank.textContent = "🥈 2위";
+        } else if (record.rank === 3) {
+          rank.textContent = "🥉 3위";
+        } else {
+          rank.textContent =
+            record.rank + "위";
+        }
+
+
+        row.appendChild(matchInfo);
+        row.appendChild(rank);
+
+        box.appendChild(row);
+      }
+    );
+  }
+
+
+  // ========================================
+  // 닫기 버튼
+  // ========================================
+
+  const closeButton =
+    document.createElement("button");
+
+  closeButton.textContent =
+    "닫기";
+
+  Object.assign(closeButton.style, {
+    display: "block",
+    width: "100%",
+    marginTop: "20px",
+    padding: "11px",
+    border: "none",
+    borderRadius: "8px",
+    background: "#475569",
+    color: "white",
+    fontWeight: "700",
+    cursor: "pointer"
+  });
+
+
+  closeButton.onclick =
+    function() {
+
+      const modal =
+        document.getElementById(
+          "playerRecordModal"
+        );
+
+      if (modal) {
+        modal.remove();
+      }
+    };
+
+
+  box.appendChild(closeButton);
+}
 
 // ========================================
 // 참가자 목록
