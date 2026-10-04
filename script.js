@@ -792,10 +792,15 @@ async function loadParticipants() {
     const checkbox =
       document.createElement("input");
 
-    checkbox.type = "checkbox";
-    checkbox.className = "participant-checkbox";
-    checkbox.value = person.id;
+checkbox.type = "checkbox";
+checkbox.className = "participant-checkbox";
+checkbox.value = person.id;
 
+checkbox.addEventListener("change", updateParticipantCount);
+
+const name =
+  document.createElement("span");
+    
     const name =
       document.createElement("span");
 
