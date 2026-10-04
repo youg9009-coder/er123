@@ -5,104 +5,285 @@
 body {
   margin: 0;
   min-height: 100vh;
+
   background:
-    radial-gradient(circle at top, #1e293b 0%, #111827 45%, #0b1120 100%);
+    radial-gradient(
+      circle at top,
+      #1e293b 0%,
+      #111827 45%,
+      #0b1120 100%
+    );
+
   color: #f8fafc;
-  font-family: Arial, "Noto Sans KR", sans-serif;
+
+  font-family:
+    Arial,
+    "Noto Sans KR",
+    sans-serif;
 }
+
+
+/* =========================
+   왼쪽 사이드바
+========================= */
+
+.sidebar {
+  position: fixed;
+
+  left: 0;
+  top: 0;
+
+  width: 150px;
+  height: 100vh;
+
+  padding: 28px 12px;
+
+  background: rgba(15, 23, 42, 0.92);
+
+  border-right: 1px solid rgba(148, 163, 184, 0.12);
+
+  backdrop-filter: blur(10px);
+
+  z-index: 1000;
+}
+
+
+/* 로고 */
+
+.sidebar-logo {
+  margin-bottom: 35px;
+
+  text-align: center;
+
+  font-size: 22px;
+  font-weight: 900;
+
+  letter-spacing: -1px;
+
+  color: #f8fafc;
+}
+
+
+/* 메뉴 */
+
+.sidebar-menu {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+
+/* 메뉴 버튼 */
+
+.sidebar-item {
+  width: 100%;
+
+  padding: 12px 8px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: #94a3b8;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.15s;
+}
+
+
+/* 마우스를 올렸을 때 */
+
+.sidebar-item:hover {
+  background: rgba(51, 65, 85, 0.6);
+
+  color: #f8fafc;
+}
+
+
+/* 현재 선택된 메뉴 */
+
+.sidebar-item.active {
+  background: #2563eb;
+
+  color: white;
+
+  box-shadow:
+    0 5px 15px rgba(37, 99, 235, 0.25);
+}
+
+
+/* =========================
+   오른쪽 메인 영역
+========================= */
+
+.main-content {
+  margin-left: 150px;
+
+  min-height: 100vh;
+
+  width: calc(100% - 150px);
+}
+
+
+/* 페이지 */
+
+.page {
+  display: none;
+
+  min-height: 100vh;
+}
+
+
+/* 현재 페이지 */
+
+.page.active-page {
+  display: block;
+}
+
+
+/* =========================
+   기존 컨테이너
+========================= */
 
 .container {
   width: 100%;
+
   max-width: 850px;
+
   margin: 0 auto;
+
   padding: 55px 25px 80px;
 }
 
+
 h1 {
   margin: 0;
+
   text-align: center;
+
   font-size: 46px;
+
   font-weight: 800;
+
   letter-spacing: -2px;
 }
 
+
 .subtitle {
   margin: 14px 0 35px;
+
   text-align: center;
+
   color: #94a3b8;
+
   font-size: 16px;
 }
 
-/* 검색 */
+
+/* =========================
+   검색
+========================= */
 
 .search-box {
   display: flex;
+
   gap: 10px;
+
   width: 100%;
+
   margin-bottom: 35px;
 }
 
+
 .search-box input {
   flex: 1;
+
   min-width: 0;
+
   height: 52px;
+
   padding: 0 18px;
 
   border: 1px solid #334155;
+
   border-radius: 12px;
 
   outline: none;
+
   background: #f8fafc;
+
   color: #111827;
 
   font-size: 16px;
 }
 
+
 .search-box input:focus {
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+
+  box-shadow:
+    0 0 0 3px rgba(59, 130, 246, 0.2);
 }
+
 
 .search-box button {
   height: 52px;
+
   padding: 0 25px;
 
   border: 0;
+
   border-radius: 12px;
 
   background: #2563eb;
+
   color: white;
 
   font-size: 16px;
+
   font-weight: 700;
 
   cursor: pointer;
 }
 
+
 .search-box button:hover {
   background: #3b82f6;
 }
 
-/* 기존 전체 티어 제목 숨기기 */
+
+/* 전체 티어 제목 숨기기 */
 
 .container > h2:first-of-type {
   display: none;
 }
 
 
-/* 티어 구역 */
+/* =========================
+   티어 구역
+========================= */
 
 .tier-section {
   margin-bottom: 38px;
 }
 
+
 .tier-title {
   margin: 0 0 14px;
+
   padding: 13px 18px;
 
   border-radius: 13px;
 
   font-size: 22px;
+
   font-weight: 800;
 
   text-align: center;
@@ -112,11 +293,12 @@ h1 {
 /* S */
 
 .tier-title-S {
-  background: linear-gradient(
-    135deg,
-    #991b1b,
-    #ef4444
-  );
+  background:
+    linear-gradient(
+      135deg,
+      #991b1b,
+      #ef4444
+    );
 
   box-shadow:
     0 8px 25px rgba(239, 68, 68, 0.18);
@@ -126,11 +308,12 @@ h1 {
 /* A */
 
 .tier-title-A {
-  background: linear-gradient(
-    135deg,
-    #c2410c,
-    #f97316
-  );
+  background:
+    linear-gradient(
+      135deg,
+      #c2410c,
+      #f97316
+    );
 
   box-shadow:
     0 8px 25px rgba(249, 115, 22, 0.16);
@@ -140,29 +323,37 @@ h1 {
 /* B */
 
 .tier-title-B {
-  background: linear-gradient(
-    135deg,
-    #1d4ed8,
-    #3b82f6
-  );
+  background:
+    linear-gradient(
+      135deg,
+      #1d4ed8,
+      #3b82f6
+    );
 
   box-shadow:
     0 8px 25px rgba(59, 130, 246, 0.16);
 }
 
 
-/* 사람 카드 */
+/* =========================
+   사람 카드
+========================= */
 
 .person {
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
+
   justify-content: center;
 
   min-height: 120px;
+
   padding: 15px;
 
   border: 1px solid rgba(148, 163, 184, 0.08);
+
   border-radius: 14px;
 
   background: rgba(30, 41, 59, 0.92);
@@ -173,20 +364,15 @@ h1 {
   transition: 0.2s;
 }
 
-.person:hover {
-  transform: translateY(-3px);
-
-  border-color: rgba(96, 165, 250, 0.3);
-
-  background: rgba(36, 50, 72, 0.98);
-}
 
 .person:hover {
   transform: translateY(-2px);
 
-  border-color: rgba(96, 165, 250, 0.3);
+  border-color:
+    rgba(96, 165, 250, 0.3);
 
-  background: rgba(36, 50, 72, 0.98);
+  background:
+    rgba(36, 50, 72, 0.98);
 }
 
 
@@ -194,43 +380,55 @@ h1 {
 
 .person-name {
   flex: 1;
+
   min-width: 0;
 
   font-size: 17px;
+
   font-weight: 700;
 
   overflow: hidden;
+
   text-overflow: ellipsis;
+
   white-space: nowrap;
 }
 
 
-/* 티어 표시 */
+/* 티어 */
 
 .tier {
   display: inline-flex;
+
   align-items: center;
+
   justify-content: center;
 
   width: 46px;
+
   height: 40px;
 
   border-radius: 9px;
 
   color: white;
+
   font-size: 18px;
+
   font-weight: 900;
 
   flex-shrink: 0;
 }
 
+
 .tier-S {
   background: #ef4444;
 }
 
+
 .tier-A {
   background: #f97316;
 }
+
 
 .tier-B {
   background: #3b82f6;
@@ -241,15 +439,19 @@ h1 {
 
 .person button {
   min-height: 34px;
+
   padding: 0 11px;
 
   border: 0;
+
   border-radius: 8px;
 
   background: #334155;
+
   color: white;
 
   font-size: 13px;
+
   font-weight: 700;
 
   cursor: pointer;
@@ -257,70 +459,35 @@ h1 {
   transition: 0.15s;
 }
 
+
 .person button:hover {
   background: #475569;
+
   transform: translateY(-1px);
 }
 
 
-/* 수정 버튼 */
-
 .person > button {
   background: #2563eb;
 }
+
 
 .person > button:hover {
   background: #3b82f6;
 }
 
 
-/* 수정 버튼 그룹 */
-
-.edit-buttons {
-  display: inline-flex;
-  gap: 5px;
-}
-
-
-/* 올리기 */
-
-.edit-buttons button[onclick*="up"] {
-  background: #2563eb;
-}
-
-.edit-buttons button[onclick*="up"]:hover {
-  background: #3b82f6;
-}
-
-
-/* 내리기 */
-
-.edit-buttons button[onclick*="down"] {
-  background: #475569;
-}
-
-.edit-buttons button[onclick*="down"]:hover {
-  background: #64748b;
-}
-
-
-/* 삭제 */
-
-.edit-buttons button[onclick*="deletePerson"] {
-  background: #991b1b;
-}
-
-.edit-buttons button[onclick*="deletePerson"]:hover {
-  background: #dc2626;
-}
-
-
-/* 사람이 없을 때 */
+/* =========================
+   사람 없음
+========================= */
 
 .empty-tier {
+  grid-column: 1 / -1;
+
   padding: 22px;
 
   border: 1px dashed #334155;
+
   border-radius: 13px;
 
   background: rgba(15, 23, 42, 0.5);
@@ -331,7 +498,9 @@ h1 {
 }
 
 
-/* 검색 결과 */
+/* =========================
+   검색 결과
+========================= */
 
 .no-result {
   padding: 25px;
@@ -346,7 +515,9 @@ h1 {
 }
 
 
-/* 사람 추가 */
+/* =========================
+   사람 추가
+========================= */
 
 #tierInput {
   height: 52px;
@@ -354,84 +525,155 @@ h1 {
   padding: 0 12px;
 
   border: 1px solid #334155;
+
   border-radius: 12px;
 
   background: #f8fafc;
+
   color: #111827;
 
   font-size: 16px;
 }
+
 
 #nameInput {
   height: 52px;
 }
 
 
-/* 모바일 */
-
-@media (max-width: 650px) {
-
-  .container {
-    padding: 35px 15px 60px;
-  }
-
-  h1 {
-    font-size: 36px;
-  }
-
-  .subtitle {
-    font-size: 14px;
-  }
-
-  .person {
-    flex-wrap: wrap;
-  }
-
-  .person-name {
-    width: calc(100% - 60px);
-  }
-
-  .edit-buttons {
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .tier-title {
-    font-size: 20px;
-  }
-
-  .search-box {
-    gap: 7px;
-  }
-
-  .search-box button {
-    padding: 0 18px;
-  }
-}
+/* =========================
+   사람 카드 그리드
+========================= */
 
 .people-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+
+  grid-template-columns:
+    repeat(5, 1fr);
+
   gap: 10px;
 }
+
 
 .people-grid .person {
   min-width: 0;
 }
 
+
+/* =========================
+   수정 버튼
+========================= */
+
 .edit-buttons {
   display: none;
+
   flex-wrap: wrap;
+
   justify-content: center;
+
   gap: 4px;
 }
 
-.empty-tier {
-  grid-column: 1 / -1;
+
+/* =========================
+   임시 페이지
+========================= */
+
+.placeholder-page {
+  width: 100%;
+
+  max-width: 850px;
+
+  margin: 0 auto;
+
+  padding: 100px 25px;
+
+  text-align: center;
 }
 
+
+.placeholder-page h1 {
+  margin-bottom: 15px;
+}
+
+
+.placeholder-page p {
+  color: #94a3b8;
+
+  font-size: 16px;
+}
+
+
+/* =========================
+   모바일
+========================= */
+
 @media (max-width: 700px) {
+
+  .sidebar {
+    width: 120px;
+
+    padding:
+      22px 8px;
+  }
+
+
+  .sidebar-logo {
+    font-size: 19px;
+
+    margin-bottom: 25px;
+  }
+
+
+  .sidebar-item {
+    font-size: 13px;
+
+    padding:
+      11px 5px;
+  }
+
+
+  .main-content {
+    margin-left: 120px;
+
+    width:
+      calc(100% - 120px);
+  }
+
+
+  .container {
+    padding:
+      35px 15px 60px;
+  }
+
+
+  h1 {
+    font-size: 36px;
+  }
+
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+
   .people-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+
+  .tier-title {
+    font-size: 20px;
+  }
+
+
+  .search-box {
+    gap: 7px;
+  }
+
+
+  .search-box button {
+    padding: 0 18px;
   }
 }
