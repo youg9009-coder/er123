@@ -26,13 +26,13 @@ async function loadPeople() {
 
   peopleList.innerHTML = "";
 
-  ["S", "A", "B"].forEach(function(tier) {
+  ["팀장", "팀원", "뉴비"].forEach(function(tier) {
     const tierSection = document.createElement("div");
     tierSection.className = "tier-section";
 
     const title = document.createElement("h2");
     title.className = "tier-title tier-title-" + tier;
-    title.textContent = "● " + tier + " TIER";
+    title.textContent = "● " + tier;
 
     tierSection.appendChild(title);
 
@@ -419,11 +419,11 @@ function openEditModal(person) {
 
   const tierSelect = document.createElement("select");
 
-  ["S", "A", "B"].forEach(function(tier) {
+  ["팀장", "팀원", "뉴비"].forEach(function(tier) {
     const option = document.createElement("option");
 
     option.value = tier;
-    option.textContent = tier + " TIER";
+    option.textContent = tier;
 
     if (tier === person.tier) {
       option.selected = true;
