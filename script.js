@@ -1,4 +1,12 @@
-// 전체 사람 목록 가져오기
+// ========================================
+// ER123 - 메인 스크립트
+// ========================================
+
+
+// ========================================
+// 전체 사람 목록
+// ========================================
+
 async function loadPeople() {
   const { data, error } = await supabaseClient
     .from("people")
@@ -11,19 +19,17 @@ async function loadPeople() {
   }
 
   const peopleList = document.getElementById("peopleList");
+  if (!peopleList) return;
 
   peopleList.innerHTML = "";
 
-  const tiers = ["S", "A", "B"];
-
-  tiers.forEach(function(tier) {
+  ["S", "A", "B"].forEach(function(tier) {
     const tierSection = document.createElement("div");
     tierSection.className = "tier-section";
 
     const title = document.createElement("h2");
     title.className = "tier-title tier-title-" + tier;
-    title.innerHTML = "● " + tier + " TIER";
-
+    title.textContent = "● " + tier + " TIER";
     tierSection.appendChild(title);
 
     const grid = document.createElement("div");
@@ -50,25 +56,23 @@ async function loadPeople() {
 }
 
 
-// 사람 카드 만들기
+// ========================================
+// 사람 카드
+// ========================================
+
 function createPersonCard(person) {
   const card = document.createElement("div");
   card.className = "person";
 
-  // 프로필 사진
   const image = document.createElement("img");
 
-  if (person.profile_image) {
-    image.src = person.profile_image;
-  } else {
-    image.src =
-      "https://ui-avatars.com/api/?name=" +
+  image.src = person.profile_image
+    ? person.profile_image
+    : "https://ui-avatars.com/api/?name=" +
       encodeURIComponent(person.name) +
       "&background=334155&color=ffffff&size=160";
-  }
 
   image.alt = person.name;
-
   image.style.width = "70px";
   image.style.height = "70px";
   image.style.borderRadius = "50%";
@@ -77,43 +81,29 @@ function createPersonCard(person) {
 
   card.appendChild(image);
 
-
-  // 이름
   const name = document.createElement("div");
   name.className = "person-name";
   name.textContent = person.name;
-
   name.style.textAlign = "center";
   name.style.width = "100%";
-
   card.appendChild(name);
 
-
-  // 별명
   if (person.nickname) {
     const nickname = document.createElement("div");
-
     nickname.textContent = "@" + person.nickname;
-
     nickname.style.fontSize = "13px";
     nickname.style.color = "#94a3b8";
     nickname.style.marginTop = "3px";
-
     card.appendChild(nickname);
   }
 
-
-  // 한줄 소개
   if (person.description) {
     const description = document.createElement("div");
-
     description.textContent = person.description;
-
     description.style.fontSize = "12px";
     description.style.color = "#cbd5e1";
     description.style.marginTop = "5px";
     description.style.textAlign = "center";
-
     card.appendChild(description);
   }
 
@@ -121,10 +111,15 @@ function createPersonCard(person) {
 }
 
 
+// ========================================
 // 사람 검색
+// ========================================
+
 async function searchPerson() {
   const searchInput = document.getElementById("searchInput");
   const result = document.getElementById("result");
+
+  if (!searchInput || !result) return;
 
   const name = searchInput.value.trim();
 
@@ -144,29 +139,33 @@ async function searchPerson() {
     return;
   }
 
-  if (data.length === 0) {
-    result.innerHTML =
-      '<div class="no-result">없음</div>';
+  if (!data || data.length === 0) {
+    result.innerHTML = '<div class="no-result">없음</div>';
     return;
   }
 
   result.innerHTML = data.map(function(person) {
     return (
       '<div class="person">' +
-        '<span>' + person.name + '</span>' +
+        "<span>" + person.name + "</span>" +
         '<span class="tier tier-' + person.tier + '">' +
           person.tier +
-        '</span>' +
-      '</div>'
+        "</span>" +
+      "</div>"
     );
   }).join("");
 }
 
 
+// ========================================
 // 사람 추가
+// ========================================
+
 async function addPerson() {
   const nameInput = document.getElementById("nameInput");
   const tierInput = document.getElementById("tierInput");
+
+  if (!nameInput || !tierInput) return;
 
   const name = nameInput.value.trim();
   const tier = tierInput.value;
@@ -178,15 +177,13 @@ async function addPerson() {
 
   const { error } = await supabaseClient
     .from("people")
-    .insert([
-      {
-        name: name,
-        tier: tier,
-        nickname: "",
-        profile_image: "",
-        description: ""
-      }
-    ]);
+    .insert([{
+      name: name,
+      tier: tier,
+      nickname: "",
+      profile_image: "",
+      description: ""
+    }]);
 
   if (error) {
     console.error(error);
@@ -194,201 +191,175 @@ async function addPerson() {
     return;
   }
 
-alert("사람이 추가되었습니다.");
+  alert("사람이 추가되었습니다.");
 
-nameInput.value = "";
+  nameInput.value = "";
 
-loadPeople();
-loadProfiles();
+  loadPeople();
+  loadProfiles();
+  loadParticipants();
 }
 
 
+// ========================================
 // 프로필 수정창
+// ========================================
+
 function openEditModal(person) {
-
-  // 기존 창 제거
   const oldModal = document.getElementById("profileEditModal");
-
-  if (oldModal) {
-    oldModal.remove();
-  }
-
+  if (oldModal) oldModal.remove();
 
   const modal = document.createElement("div");
-
   modal.id = "profileEditModal";
 
-  modal.style.position = "fixed";
-  modal.style.left = "0";
-  modal.style.top = "0";
-  modal.style.width = "100%";
-  modal.style.height = "100%";
-  modal.style.background = "rgba(0,0,0,0.7)";
-  modal.style.display = "flex";
-  modal.style.alignItems = "center";
-  modal.style.justifyContent = "center";
-  modal.style.zIndex = "9999";
-
+  Object.assign(modal.style, {
+    position: "fixed",
+    left: "0",
+    top: "0",
+    width: "100%",
+    height: "100%",
+    background: "rgba(0,0,0,0.7)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: "9999"
+  });
 
   const box = document.createElement("div");
 
-  box.style.width = "min(450px, 90%)";
-  box.style.background = "#1e293b";
-  box.style.borderRadius = "18px";
-  box.style.padding = "25px";
-  box.style.color = "white";
-  box.style.boxShadow = "0 20px 50px rgba(0,0,0,0.4)";
-
+  Object.assign(box.style, {
+    width: "min(450px, 90%)",
+    background: "#1e293b",
+    borderRadius: "18px",
+    padding: "25px",
+    color: "white",
+    boxShadow: "0 20px 50px rgba(0,0,0,0.4)"
+  });
 
   const title = document.createElement("h2");
-
   title.textContent = "프로필 수정";
-
   title.style.textAlign = "center";
   title.style.marginTop = "0";
-
   box.appendChild(title);
 
 
   // 사진 미리보기
   const preview = document.createElement("img");
 
-  if (person.profile_image) {
-    preview.src = person.profile_image;
-  } else {
-    preview.src =
-      "https://ui-avatars.com/api/?name=" +
+  preview.src = person.profile_image
+    ? person.profile_image
+    : "https://ui-avatars.com/api/?name=" +
       encodeURIComponent(person.name) +
       "&background=334155&color=ffffff&size=160";
-  }
 
-  preview.style.display = "block";
-  preview.style.width = "100px";
-  preview.style.height = "100px";
-  preview.style.objectFit = "cover";
-  preview.style.borderRadius = "50%";
-  preview.style.margin = "10px auto 15px";
+  Object.assign(preview.style, {
+    display: "block",
+    width: "100px",
+    height: "100px",
+    objectFit: "cover",
+    borderRadius: "50%",
+    margin: "10px auto 15px"
+  });
 
   box.appendChild(preview);
 
 
   // 사진 선택
   const imageInput = document.createElement("input");
-
   imageInput.type = "file";
   imageInput.accept = "image/*";
-
   imageInput.style.display = "block";
   imageInput.style.margin = "0 auto 20px";
-
   box.appendChild(imageInput);
-
 
   imageInput.onchange = function() {
     const file = imageInput.files[0];
-
-    if (!file) {
-      return;
+    if (file) {
+      preview.src = URL.createObjectURL(file);
     }
-
-    preview.src = URL.createObjectURL(file);
   };
 
 
   // 이름
   const nameLabel = document.createElement("div");
-
   nameLabel.textContent = "이름";
-
   nameLabel.style.marginBottom = "5px";
-
   box.appendChild(nameLabel);
 
-
   const nameInput = document.createElement("input");
-
   nameInput.type = "text";
   nameInput.value = person.name;
 
-  nameInput.style.width = "100%";
-  nameInput.style.height = "42px";
-  nameInput.style.padding = "0 12px";
-  nameInput.style.marginBottom = "15px";
-  nameInput.style.borderRadius = "8px";
-  nameInput.style.border = "1px solid #475569";
-  nameInput.style.boxSizing = "border-box";
+  Object.assign(nameInput.style, {
+    width: "100%",
+    height: "42px",
+    padding: "0 12px",
+    marginBottom: "15px",
+    borderRadius: "8px",
+    border: "1px solid #475569",
+    boxSizing: "border-box"
+  });
 
   box.appendChild(nameInput);
 
 
   // 별명
   const nicknameLabel = document.createElement("div");
-
   nicknameLabel.textContent = "별명";
-
   nicknameLabel.style.marginBottom = "5px";
-
   box.appendChild(nicknameLabel);
 
-
   const nicknameInput = document.createElement("input");
-
   nicknameInput.type = "text";
   nicknameInput.value = person.nickname || "";
   nicknameInput.placeholder = "별명을 입력하세요";
 
-  nicknameInput.style.width = "100%";
-  nicknameInput.style.height = "42px";
-  nicknameInput.style.padding = "0 12px";
-  nicknameInput.style.marginBottom = "15px";
-  nicknameInput.style.borderRadius = "8px";
-  nicknameInput.style.border = "1px solid #475569";
-  nicknameInput.style.boxSizing = "border-box";
+  Object.assign(nicknameInput.style, {
+    width: "100%",
+    height: "42px",
+    padding: "0 12px",
+    marginBottom: "15px",
+    borderRadius: "8px",
+    border: "1px solid #475569",
+    boxSizing: "border-box"
+  });
 
   box.appendChild(nicknameInput);
 
 
   // 한줄 소개
   const descriptionLabel = document.createElement("div");
-
   descriptionLabel.textContent = "한줄 소개";
-
   descriptionLabel.style.marginBottom = "5px";
-
   box.appendChild(descriptionLabel);
 
-
   const descriptionInput = document.createElement("input");
-
   descriptionInput.type = "text";
   descriptionInput.value = person.description || "";
   descriptionInput.placeholder = "한줄 소개를 입력하세요";
 
-  descriptionInput.style.width = "100%";
-  descriptionInput.style.height = "42px";
-  descriptionInput.style.padding = "0 12px";
-  descriptionInput.style.marginBottom = "15px";
-  descriptionInput.style.borderRadius = "8px";
-  descriptionInput.style.border = "1px solid #475569";
-  descriptionInput.style.boxSizing = "border-box";
+  Object.assign(descriptionInput.style, {
+    width: "100%",
+    height: "42px",
+    padding: "0 12px",
+    marginBottom: "15px",
+    borderRadius: "8px",
+    border: "1px solid #475569",
+    boxSizing: "border-box"
+  });
 
   box.appendChild(descriptionInput);
 
 
   // 티어
   const tierLabel = document.createElement("div");
-
   tierLabel.textContent = "티어";
-
   tierLabel.style.marginBottom = "5px";
-
   box.appendChild(tierLabel);
-
 
   const tierSelect = document.createElement("select");
 
   ["S", "A", "B"].forEach(function(tier) {
-
     const option = document.createElement("option");
 
     option.value = tier;
@@ -401,11 +372,12 @@ function openEditModal(person) {
     tierSelect.appendChild(option);
   });
 
-
-  tierSelect.style.width = "100%";
-  tierSelect.style.height = "42px";
-  tierSelect.style.marginBottom = "20px";
-  tierSelect.style.borderRadius = "8px";
+  Object.assign(tierSelect.style, {
+    width: "100%",
+    height: "42px",
+    marginBottom: "20px",
+    borderRadius: "8px"
+  });
 
   box.appendChild(tierSelect);
 
@@ -413,23 +385,26 @@ function openEditModal(person) {
   // 버튼 영역
   const buttons = document.createElement("div");
 
-  buttons.style.display = "flex";
-  buttons.style.gap = "7px";
-  buttons.style.flexWrap = "wrap";
-  buttons.style.justifyContent = "center";
+  Object.assign(buttons.style, {
+    display: "flex",
+    gap: "7px",
+    flexWrap: "wrap",
+    justifyContent: "center"
+  });
 
 
-  // 저장
+  // 저장 버튼
   const saveButton = document.createElement("button");
-
   saveButton.textContent = "저장";
 
-  saveButton.style.background = "#2563eb";
-  saveButton.style.color = "white";
-  saveButton.style.border = "0";
-  saveButton.style.borderRadius = "8px";
-  saveButton.style.padding = "10px 18px";
-  saveButton.style.cursor = "pointer";
+  Object.assign(saveButton.style, {
+    background: "#2563eb",
+    color: "white",
+    border: "0",
+    borderRadius: "8px",
+    padding: "10px 18px",
+    cursor: "pointer"
+  });
 
   saveButton.onclick = function() {
     saveProfile(
@@ -446,17 +421,18 @@ function openEditModal(person) {
   buttons.appendChild(saveButton);
 
 
-  // 닫기
+  // 닫기 버튼
   const closeButton = document.createElement("button");
-
   closeButton.textContent = "닫기";
 
-  closeButton.style.background = "#475569";
-  closeButton.style.color = "white";
-  closeButton.style.border = "0";
-  closeButton.style.borderRadius = "8px";
-  closeButton.style.padding = "10px 18px";
-  closeButton.style.cursor = "pointer";
+  Object.assign(closeButton.style, {
+    background: "#475569",
+    color: "white",
+    border: "0",
+    borderRadius: "8px",
+    padding: "10px 18px",
+    cursor: "pointer"
+  });
 
   closeButton.onclick = function() {
     modal.remove();
@@ -465,17 +441,18 @@ function openEditModal(person) {
   buttons.appendChild(closeButton);
 
 
-  // 삭제
+  // 삭제 버튼
   const deleteButton = document.createElement("button");
-
   deleteButton.textContent = "삭제";
 
-  deleteButton.style.background = "#991b1b";
-  deleteButton.style.color = "white";
-  deleteButton.style.border = "0";
-  deleteButton.style.borderRadius = "8px";
-  deleteButton.style.padding = "10px 18px";
-  deleteButton.style.cursor = "pointer";
+  Object.assign(deleteButton.style, {
+    background: "#991b1b",
+    color: "white",
+    border: "0",
+    borderRadius: "8px",
+    padding: "10px 18px",
+    cursor: "pointer"
+  });
 
   deleteButton.onclick = function() {
     deletePerson(person.id, modal);
@@ -483,16 +460,16 @@ function openEditModal(person) {
 
   buttons.appendChild(deleteButton);
 
-
   box.appendChild(buttons);
-
   modal.appendChild(box);
-
   document.body.appendChild(modal);
 }
 
 
+// ========================================
 // 프로필 저장
+// ========================================
+
 async function saveProfile(
   person,
   name,
@@ -502,33 +479,24 @@ async function saveProfile(
   imageFile,
   modal
 ) {
-
   if (!name) {
     alert("이름을 입력해주세요.");
     return;
   }
 
-
   let profileImage = person.profile_image || "";
 
 
-  // 새 사진이 선택된 경우
+  // 새 사진 업로드
   if (imageFile) {
-
-    const fileExt =
-      imageFile.name.split(".").pop();
+    const fileExt = imageFile.name.split(".").pop();
 
     const fileName =
-      person.id +
-      "_" +
-      Date.now() +
-      "." +
+      person.id + "_" +
+      Date.now() + "." +
       fileExt;
 
-
-    const filePath =
-      "profiles/" + fileName;
-
+    const filePath = "profiles/" + fileName;
 
     const { error: uploadError } =
       await supabaseClient
@@ -537,7 +505,6 @@ async function saveProfile(
         .upload(filePath, imageFile, {
           upsert: true
         });
-
 
     if (uploadError) {
       console.error(uploadError);
@@ -550,16 +517,13 @@ async function saveProfile(
       return;
     }
 
-
     const { data: publicData } =
       supabaseClient
         .storage
         .from("profiles")
         .getPublicUrl(filePath);
 
-
-    profileImage =
-      publicData.publicUrl;
+    profileImage = publicData.publicUrl;
   }
 
 
@@ -575,62 +539,60 @@ async function saveProfile(
     })
     .eq("id", person.id);
 
-
   if (error) {
     console.error(error);
-
     alert("프로필 수정에 실패했습니다.");
-
     return;
   }
-
 
   alert("프로필이 수정되었습니다.");
 
   modal.remove();
 
   loadPeople();
+  loadProfiles();
+  loadParticipants();
 }
 
 
+// ========================================
 // 사람 삭제
-async function deletePerson(id, modal) {
+// ========================================
 
+async function deletePerson(id, modal) {
   const confirmed =
     confirm("정말 이 사람을 삭제하시겠습니까?");
 
-  if (!confirmed) {
-    return;
-  }
-
+  if (!confirmed) return;
 
   const { error } = await supabaseClient
     .from("people")
     .delete()
     .eq("id", id);
 
-
   if (error) {
     console.error(error);
-
     alert("삭제에 실패했습니다.");
-
     return;
   }
-
 
   alert("삭제되었습니다.");
 
   modal.remove();
 
   loadPeople();
+  loadProfiles();
+  loadParticipants();
 }
 
+
+// ========================================
 // 프로필 목록
+// ========================================
 
 async function loadProfiles() {
-
-  const profileList = document.getElementById("profileList");
+  const profileList =
+    document.getElementById("profileList");
 
   if (!profileList) return;
 
@@ -643,7 +605,8 @@ async function loadProfiles() {
 
   if (error) {
     console.error(error);
-    profileList.innerHTML = "<p>프로필을 불러오지 못했습니다.</p>";
+    profileList.innerHTML =
+      "<p>프로필을 불러오지 못했습니다.</p>";
     return;
   }
 
@@ -654,25 +617,21 @@ async function loadProfiles() {
   }
 
   data.forEach(function(person) {
-
     const card = document.createElement("div");
     card.className = "profile-card";
 
-    // 프로필 사진
+
+    // 사진
     const image = document.createElement("img");
 
-    if (person.profile_image) {
-      image.src = person.profile_image;
-    } else {
-      image.src =
-        "https://ui-avatars.com/api/?name=" +
+    image.src = person.profile_image
+      ? person.profile_image
+      : "https://ui-avatars.com/api/?name=" +
         encodeURIComponent(person.name) +
         "&background=334155&color=ffffff&size=200";
-    }
 
     image.alt = person.name;
     image.className = "profile-image";
-
     card.appendChild(image);
 
 
@@ -680,46 +639,37 @@ async function loadProfiles() {
     const name = document.createElement("h2");
     name.textContent = person.name;
     name.className = "profile-name";
-
     card.appendChild(name);
 
 
     // 닉네임
     if (person.nickname) {
-
       const nickname = document.createElement("div");
-
       nickname.textContent = "@" + person.nickname;
       nickname.className = "profile-nickname";
-
       card.appendChild(nickname);
     }
 
 
     // 자기소개
     if (person.description) {
-
       const description = document.createElement("p");
-
       description.textContent = person.description;
       description.className = "profile-description";
-
       card.appendChild(description);
     }
 
 
     // 티어
     const tier = document.createElement("div");
-
     tier.textContent = person.tier;
-    tier.className = "profile-tier tier-" + person.tier;
-
+    tier.className =
+      "profile-tier tier-" + person.tier;
     card.appendChild(tier);
 
 
     // 수정 버튼
     const editButton = document.createElement("button");
-
     editButton.textContent = "프로필 수정";
     editButton.className = "profile-edit-button";
 
@@ -729,26 +679,23 @@ async function loadProfiles() {
 
     card.appendChild(editButton);
 
-
     profileList.appendChild(card);
   });
 }
 
-// =========================
-// 참가자 선택
-// =========================
+
+// ========================================
+// 참가자 목록
+// ========================================
 
 async function loadParticipants() {
-
   const participantList =
     document.getElementById("participantList");
 
   const participantCount =
     document.getElementById("participantCount");
 
-  if (!participantList) {
-    return;
-  }
+  if (!participantList) return;
 
   participantList.innerHTML =
     "<p class='team-loading'>사람 목록을 불러오는 중...</p>";
@@ -759,7 +706,6 @@ async function loadParticipants() {
     .order("id", { ascending: true });
 
   if (error) {
-
     console.error(error);
 
     participantList.innerHTML =
@@ -771,7 +717,6 @@ async function loadParticipants() {
   participantList.innerHTML = "";
 
   if (!data || data.length === 0) {
-
     participantList.innerHTML =
       "<p class='team-error'>등록된 사람이 없습니다.</p>";
 
@@ -783,50 +728,43 @@ async function loadParticipants() {
   }
 
   data.forEach(function(person) {
-
-    const item =
-      document.createElement("label");
-
+    const item = document.createElement("label");
     item.className = "participant-item";
 
-    const checkbox =
-      document.createElement("input");
+    const checkbox = document.createElement("input");
 
-checkbox.type = "checkbox";
-checkbox.className = "participant-checkbox";
-checkbox.value = person.id;
+    checkbox.type = "checkbox";
+    checkbox.className = "participant-checkbox";
+    checkbox.value = person.id;
 
-checkbox.addEventListener("change", updateParticipantCount);
-    
-    const name =
-      document.createElement("span");
+    // 선택할 때 참가자 수 변경
+    checkbox.addEventListener(
+      "change",
+      updateParticipantCount
+    );
 
+    const name = document.createElement("span");
     name.textContent = person.name;
 
     item.appendChild(checkbox);
     item.appendChild(name);
 
     participantList.appendChild(item);
-
   });
 
   updateParticipantCount();
-
 }
 
 
-// =========================
+// ========================================
 // 참가자 수 표시
-// =========================
+// ========================================
 
 function updateParticipantCount() {
-
   const participantCount =
     document.getElementById("participantCount");
 
-  if (!participantCount) {
-    return;
-  }
+  if (!participantCount) return;
 
   const checked =
     document.querySelectorAll(
@@ -835,51 +773,48 @@ function updateParticipantCount() {
 
   participantCount.textContent =
     checked.length + "명";
-
 }
 
 
-// =========================
-// 랜덤 팀 만들기
-// =========================
+// ========================================
+// 랜덤 팀 생성
+// ========================================
 
 async function createRandomTeam() {
-
   const teamResult =
     document.getElementById("teamResult");
 
-  if (!teamResult) {
-    return;
-  }
+  if (!teamResult) return;
 
   const checked =
     document.querySelectorAll(
       ".participant-checkbox:checked"
     );
 
-  if (checked.length === 0) {
 
+  // 참가자 없음
+  if (checked.length === 0) {
     teamResult.innerHTML =
       "<p class='team-error'>참가자를 먼저 선택해주세요.</p>";
-
     return;
   }
 
-  if (checked.length < 3) {
 
+  // 3명 미만
+  if (checked.length < 3) {
     teamResult.innerHTML =
       "<p class='team-error'>최소 3명을 선택해주세요.</p>";
-
     return;
   }
 
-  if (checked.length % 3 !== 0) {
 
+  // 3명 단위가 아닌 경우
+  if (checked.length % 3 !== 0) {
     teamResult.innerHTML =
       "<p class='team-error'>참가자는 3명 단위로 선택해주세요.</p>";
-
     return;
   }
+
 
   teamResult.innerHTML =
     "<p class='team-loading'>팀을 만드는 중...</p>";
@@ -899,9 +834,7 @@ async function createRandomTeam() {
       .select("*")
       .in("id", selectedIds);
 
-
   if (error) {
-
     console.error(error);
 
     teamResult.innerHTML =
@@ -910,9 +843,7 @@ async function createRandomTeam() {
     return;
   }
 
-
   if (!data || data.length < 3) {
-
     teamResult.innerHTML =
       "<p class='team-error'>참가자를 불러오지 못했습니다.</p>";
 
@@ -920,36 +851,28 @@ async function createRandomTeam() {
   }
 
 
-  // =========================
+  // ========================================
   // 완전 랜덤 섞기
-  // =========================
+  // ========================================
 
-  const shuffled =
-    [...data];
+  const shuffled = [...data];
 
   for (
     let i = shuffled.length - 1;
     i > 0;
     i--
   ) {
-
     const j =
       Math.floor(Math.random() * (i + 1));
 
-    const temp =
-      shuffled[i];
-
-    shuffled[i] =
-      shuffled[j];
-
-    shuffled[j] =
-      temp;
+    [shuffled[i], shuffled[j]] =
+      [shuffled[j], shuffled[i]];
   }
 
 
-  // =========================
+  // ========================================
   // 3명씩 팀 만들기
-  // =========================
+  // ========================================
 
   const teams = [];
 
@@ -958,48 +881,34 @@ async function createRandomTeam() {
     i < shuffled.length;
     i += 3
   ) {
-
     teams.push(
       shuffled.slice(i, i + 3)
     );
-
   }
 
 
-  // =========================
+  // ========================================
   // 결과 출력
-  // =========================
+  // ========================================
 
   teamResult.innerHTML = "";
 
-  const title =
-    document.createElement("h2");
-
-  title.textContent =
-    "랜덤 팀";
-
-  title.className =
-    "team-result-title";
-
+  const title = document.createElement("h2");
+  title.textContent = "랜덤 팀";
+  title.className = "team-result-title";
   teamResult.appendChild(title);
 
 
   teams.forEach(function(team, teamIndex) {
-
     const teamTitle =
       document.createElement("h3");
 
     teamTitle.textContent =
       "팀 " + (teamIndex + 1);
 
-    teamTitle.style.margin =
-      "30px 0 15px";
-
-    teamTitle.style.fontSize =
-      "22px";
-
-    teamTitle.style.color =
-      "white";
+    teamTitle.style.margin = "30px 0 15px";
+    teamTitle.style.fontSize = "22px";
+    teamTitle.style.color = "white";
 
     teamResult.appendChild(teamTitle);
 
@@ -1007,42 +916,28 @@ async function createRandomTeam() {
     const teamCards =
       document.createElement("div");
 
-    teamCards.className =
-      "team-cards";
+    teamCards.className = "team-cards";
 
 
     team.forEach(function(person) {
-
       const card =
         document.createElement("div");
 
-      card.className =
-        "team-card";
+      card.className = "team-card";
 
 
-      // 프로필 이미지
+      // 프로필 사진
       const image =
         document.createElement("img");
 
-      if (person.profile_image) {
-
-        image.src =
-          person.profile_image;
-
-      } else {
-
-        image.src =
-          "https://ui-avatars.com/api/?name=" +
+      image.src = person.profile_image
+        ? person.profile_image
+        : "https://ui-avatars.com/api/?name=" +
           encodeURIComponent(person.name) +
           "&background=334155&color=ffffff&size=200";
 
-      }
-
-      image.alt =
-        person.name;
-
-      image.className =
-        "team-image";
+      image.alt = person.name;
+      image.className = "team-image";
 
       card.appendChild(image);
 
@@ -1051,18 +946,14 @@ async function createRandomTeam() {
       const name =
         document.createElement("h3");
 
-      name.textContent =
-        person.name;
-
-      name.className =
-        "team-name";
+      name.textContent = person.name;
+      name.className = "team-name";
 
       card.appendChild(name);
 
 
       // 닉네임
       if (person.nickname) {
-
         const nickname =
           document.createElement("div");
 
@@ -1073,25 +964,20 @@ async function createRandomTeam() {
           "team-nickname";
 
         card.appendChild(nickname);
-
       }
 
-
       teamCards.appendChild(card);
-
     });
 
 
     teamResult.appendChild(teamCards);
-
   });
-
 }
 
 
-// =========================
-// 페이지가 열리면 목록 표시
-// =========================
+// ========================================
+// 초기 실행
+// ========================================
 
 loadPeople();
 loadParticipants();
